@@ -1,0 +1,40 @@
+@startuml 类设计
+' skinparam Linetype ortho
+skinparam roundCorner 10
+left to right direction
+
+package parser{ /'解析器包:读入代码，通过javaparser工具读入代码，生成AST并建立数据模型'/
+    abstract class abstractParser{} /'抽象解析器(optional)'/
+    class fileParser{}  /'单文件解析器'/
+    class ProjectParser{}  /'多文件解析器'/ 
+}
+package model{ /'数据模型包:存储读入的数据'/
+    /'感觉可以塞一个简单工厂在这里'/
+    abstract class abstractModel{} 
+    class classModel{}  /'类模型'/
+    class FieldModel{}  /'类属性模型'/
+    class MethodModel{}  /'类方法模型'/
+    
+    abstract class RelateModel{}  /'类间关系模型:继承、实现'/
+    class InheritModel{}  /'继承关系模型'/
+    class ImplementModel{}  /'实现关系模型'/
+
+    classModel --|> abstractModel
+    FieldModel --|> abstractModel
+    MethodModel --|> abstractModel
+
+    RelateModel --|> abstractModel
+    InheritModel --|> RelateModel
+    ImplementModel --|> RelateModel
+}
+package generator /' 生成器包：依据建立的数据模型导出需求格式文件'/
+{
+    abstract class abstractGenerator{}
+    class plantUmlGenerator{}  /'plantuml代码生成器'/
+    plantUmlGenerator --|> abstractGenerator    
+}
+package util{ /'工具包：一些工具类与方法'/
+    /'具体遇到具体写'/
+}
+
+@enduml
