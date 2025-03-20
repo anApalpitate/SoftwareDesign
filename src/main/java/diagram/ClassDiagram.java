@@ -12,11 +12,11 @@ public class ClassDiagram {
     private final CompilationUnit root;
     private final List<ClassModel> classModels;
     private final List<ClassModel> interfaces;
-    ;;
+
 
     ClassDiagram(CompilationUnit root) {
-        this.interfaces = new ArrayList<ClassModel>();
-        this.classModels = new ArrayList<ClassModel>();
+        this.interfaces = new ArrayList<>();
+        this.classModels = new ArrayList<>();
         this.root = root;
 
         for (ClassOrInterfaceDeclaration classOrInterface : root.findAll(ClassOrInterfaceDeclaration.class)) {
@@ -65,5 +65,5 @@ public class ClassDiagram {
             }
         });
     }
-    
+
 }
