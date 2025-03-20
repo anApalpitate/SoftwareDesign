@@ -9,20 +9,21 @@ package diagram{
 
 package model{ /'数据模型包:存储读入的数据'/
     /'感觉可以塞一个简单工厂在这里'/
-    abstract class BaseModel{}
-    class classModel{}  /'类模型'/
+    class BaseModel{} 
+    class ClassModel{}  /'类模型'/
     class FieldModel{}  /'类属性模型'/
     class MethodModel{}  /'类方法模型'/
 
-    classModel --|> BaseModel
+    ClassModel --|> BaseModel
     FieldModel --|> BaseModel
     MethodModel --|> BaseModel
 
-    FiledModel *-- classModel
-    MethodModel *-- classModel
+    FiledModel *-- ClassModel
+    MethodModel *-- ClassModel
 }
 package util{ /'工具包：一些工具类与方法'/
     /'具体遇到具体写'/
+    class ModifierUtils
 }
 
 @enduml

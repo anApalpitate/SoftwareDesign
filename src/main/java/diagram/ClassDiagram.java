@@ -1,12 +1,13 @@
 package diagram;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import model.ClassModel;
 
-import java.util.ArrayList;
-import java.util.List;
+import model.ClassModel;
 
 public class ClassDiagram {
     private final CompilationUnit root;

@@ -16,5 +16,4 @@ public class BaseModel {
     public String getVisibility() {
         return visibility;
     }
-    
 }
