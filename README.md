@@ -4,26 +4,22 @@
 
 ## 项目结构
 
-src目录下：
-
-├─main			项目主文件夹
-│  └─java			
-│      │  Main.java 	程序入口
-│      │
-│      ├─diagram		文件读入与类图生成
-│      │      ClassDiagram.java
-│      │      ClassDiagramGenerator.java
-│      │
-│      ├─model		数据模型
-│      │      BaseModel.java
-│      │      ClassModel.java
-│      │      FieldModel.java
-│      │      MethodModel.java
-│      │
-│      └─utils		工具函数
-│              ModifierUtils.java
-│
-└─test		项目测试文件夹
-
-
-
+src
+├── main                # 项目主文件夹
+│   ├── java            # Java 源代码
+│   │   ├── Main.java   # 程序入口
+│   │   │
+│   │   ├── diagram     # 文件读入与类图生成
+│   │   │   ├── ClassDiagram.java
+│   │   │   └── ClassDiagramGenerator.java
+│   │   │
+│   │   ├── model       # 数据模型
+│   │   │   ├── BaseModel.java
+│   │   │   ├── ClassModel.java
+│   │   │   ├── FieldModel.java
+│   │   │   └── MethodModel.java
+│   │   │
+│   │   └── utils       # 工具函数
+│   │       └── ModifierUtils.java
+│   │
+└── test                # 项目测试文件夹
