@@ -7,6 +7,18 @@
     <groupId>org.example</groupId>
     <artifactId>JClassDiagram</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -18,7 +30,7 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.25.8</version>
+            <version>3.24.0</version>
         </dependency>
         
         <!-- JavaParser Symbol Solver (用于解析符号引用) -->
@@ -35,6 +47,7 @@
             <version>5.9.2</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 </project>
