@@ -11,21 +11,23 @@
 | 潘智杰 | 221900313 | 3160400570 | 组员 |
 | 庞鸿博 | 221900314 | 3231417980 | 组员 |
 
+### git 仓库地址
+
+[https://git.nju.edu.cn/software_group_31/software_group_31](https://git.nju.edu.cn/software_group_31/software_group_31)
+
 ## 项目目标
 
-设计并用Java代码实现一个 为Java代码自动生成plantUML类图的工具
+设计并用 Java 代码实现一个 为 Java 代码自动生成 plantUML 类图的工具
 
 ## 系统设计
 
 ### 总体设计
 
-- Diagram包:解析源代码并生成类图的plantUML语句
-- Model包:负责定义和封装类、字段和方法的模型数据结构
-- Utils包: 提供辅助工具函数
+- Diagram 包:解析源代码并生成类图的 plantUML 语句
+- Model 包:负责定义和封装类、字段和方法的模型数据结构
+- Utils 包: 提供辅助工具函数
 
 ### 类设计
-
-
 
 <img src="./assets/image-20250320142523758.png" alt="image-20250320142523758" style="zoom:50%;" />
 
@@ -39,15 +41,13 @@
 - **模块化编程**:项目中每个包关注不同的职责，体现了模块化的设计思路。
 - **面向接口编程**:`ClassModel`、`FieldModel` 和 `MethodModel` 类都继承自 `BaseModel`，这种设计允许其他类型的模型继承 `BaseModel`，而不破坏现有系统。
 
-
-
 ### 数据结构与算法设计
 
-**代码解析**:系统使用 **JavaParser** 库来解析源代码,将 Java 源代码解析成抽象语法树(AST)。在解析过程中，源代码会被转换成 `CompilationUnit` 对象,作为AST的根节点。对于不同的数据模型，递归地传入对应的语法树节点。
+**代码解析**:系统使用 **JavaParser** 库来解析源代码,将 Java 源代码解析成抽象语法树(AST)。在解析过程中，源代码会被转换成 `CompilationUnit` 对象,作为 AST 的根节点。对于不同的数据模型，递归地传入对应的语法树节点。
 
-**关系分析**:使用`ClassOrInterfaceDeclaration`的 getExtendedTypes与getImplementedTypes方法得到继承与依赖方法。
+**关系分析**:使用`ClassOrInterfaceDeclaration`的 getExtendedTypes 与 getImplementedTypes 方法得到继承与依赖方法。
 
-**结果输出**:目前采用StringBuilder,对于模型类覆写了ToString()方法。后续考虑在utils中添加新的输出工具类以统一输出模式。
+**结果输出**:目前采用 StringBuilder,对于模型类覆写了 ToString()方法。后续考虑在 utils 中添加新的输出工具类以统一输出模式。
 
 **结果排序**:通过哈希表对优先级预先映射，按照
 
@@ -64,15 +64,15 @@
 
 ### 运行结果
 
-**Test运行结果**
+**Test 运行结果**
 
 <img src="./assets/image-20250320143440565.png" alt="image-20250320143440565" style="zoom: 33%;" />
 
-**oj运行结果**
+**oj 运行结果**
 
 <img src="./assets/image-20250320144854010.png" alt="image-20250320144854010" style="zoom: 67%;" />
 
-**运行实例**(以Animal.java为例)
+**运行实例**(以 Animal.java 为例)
 
 ```pseudocode
 @startuml
@@ -98,4 +98,3 @@ Animal <|-- Bird
 Flyable <|.. Bird
 @enduml
 ```
-
