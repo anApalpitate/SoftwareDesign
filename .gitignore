@@ -2,4 +2,4 @@
 .vscode/
 *.zip
 /target/
-
+/docs/assets
