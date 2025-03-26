@@ -15,6 +15,8 @@
 
 [https://git.nju.edu.cn/software_group_31/software_group_31](https://git.nju.edu.cn/software_group_31/software_group_31)
 
+迭代一部分代码在iter1分支下
+
 ## 项目目标
 
 设计并用 Java 代码实现一个 为 Java 代码自动生成 plantUML 类图的工具
