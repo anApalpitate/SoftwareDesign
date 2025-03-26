@@ -32,7 +32,7 @@ public class EnumModel extends AbstractClassModel {
     void parseFields(BodyDeclaration declaration) {
         if (declaration instanceof EnumDeclaration enumDecl) {
             for (FieldDeclaration field : enumDecl.getFields()) {
-                fields.add(new FieldModel(field, "enum_field"));
+                fields.add(new FieldModel(field, getName(), "enum_field"));
             }
         }
     }
@@ -40,7 +40,7 @@ public class EnumModel extends AbstractClassModel {
     void parseMethods(BodyDeclaration declaration) {
         if (declaration instanceof EnumDeclaration enumDecl) {
             for (MethodDeclaration methodDecl : enumDecl.getMethods()) {
-                methods.add(new MethodModel(methodDecl, "enum_method"));
+                methods.add(new MethodModel(methodDecl, getName(), "enum_method"));
             }
         }
     }

@@ -9,16 +9,18 @@ public class MethodModel extends BaseModel {
     private final boolean isStatic;
     private final boolean isAbstract;
     private final boolean isConstructor;
-    private String genericReturnType;
+    private final String genericReturnType;
+    private final String className;
     private String parameters;
 
-    public MethodModel(MethodDeclaration method, String arg) {
+    public MethodModel(MethodDeclaration method, String className, String arg) {
         super(method.getName().toString(), extractVisibility(method.getModifiers(), arg));
 
         this.returnType = method.getType().asString().replaceAll(",", ", ");
         this.isStatic = method.isStatic();
         this.isAbstract = method.isAbstract();
         this.isConstructor = method.isConstructorDeclaration();
+        this.className = className;
         this.genericReturnType = extractGenericReturnType(method);
         this.buildParam(method);
     }
@@ -56,5 +58,9 @@ public class MethodModel extends BaseModel {
 
     public boolean isConstructor() {
         return isConstructor;
+    }
+
+    public String getClassName() {
+        return className;
     }
 }

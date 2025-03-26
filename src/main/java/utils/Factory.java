@@ -3,7 +3,6 @@ package utils;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
-import graph.Relate;
 import model.AbstractClassModel;
 import model.ClassModel;
 import model.EnumModel;
@@ -25,7 +24,4 @@ public class Factory {
         }
     }
 
-    public static Relate relateFactory(ClassOrInterfaceDeclaration classOrInterface) {
-        return null;
-    }
 }

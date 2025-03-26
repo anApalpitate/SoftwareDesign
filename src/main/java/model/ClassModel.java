@@ -4,6 +4,8 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import graph.Graph;
 
 public class ClassModel extends AbstractClassModel {
     private final boolean isAbstract;
@@ -21,12 +23,14 @@ public class ClassModel extends AbstractClassModel {
         parseFields(decl);
         parseMethods(decl);
         SortFieldsAndMethods();
+        findInheritancesAndImplementations(decl);
+
     }
 
     void parseFields(BodyDeclaration declaration) {
         if (declaration instanceof ClassOrInterfaceDeclaration classDecl) {
             for (FieldDeclaration field : classDecl.getFields()) {
-                fields.add(new FieldModel(field, ""));
+                fields.add(new FieldModel(field, getName(), ""));
             }
         }
     }
@@ -34,11 +38,22 @@ public class ClassModel extends AbstractClassModel {
     void parseMethods(BodyDeclaration declaration) {
         if (declaration instanceof ClassOrInterfaceDeclaration classDecl) {
             for (MethodDeclaration method : classDecl.getMethods()) {
-                methods.add(new MethodModel(method, ""));
+                methods.add(new MethodModel(method, getName(), ""));
             }
         }
     }
 
+    private void findInheritancesAndImplementations(ClassOrInterfaceDeclaration decl) {
+        String srcName = getName();
+        for (ClassOrInterfaceType relatedClass : decl.getExtendedTypes()) {
+            String dstName = relatedClass.getNameAsString();
+            Graph.addInheritance(srcName, dstName);
+        }
+        for (ClassOrInterfaceType relatedClass : decl.getImplementedTypes()) {
+            String dstName = relatedClass.getNameAsString();
+            Graph.addImplementation(srcName, dstName);
+        }
+    }
 
     public String generateString() {
         String blank = "    ";

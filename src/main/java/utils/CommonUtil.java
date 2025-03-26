@@ -50,8 +50,13 @@ public class CommonUtil {
 
     public static boolean isBasicType(String type) {
         switch (type) {
+            //基础类型
             case "int", "long", "float", "double", "boolean", "char", "byte", "short", "void",
                  "Integer", "Long", "Float", "Double", "Boolean", "Character", "Byte", "Short", "String" -> {
+                return true;
+            }
+            //内置容器类
+            case "Set", "List", "Map", "ArrayList", "Stack", "LinkedList", "HashSet", "HashMap", "Queue " -> {
                 return true;
             }
             default -> {
