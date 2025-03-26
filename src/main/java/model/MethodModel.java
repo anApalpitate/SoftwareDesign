@@ -8,37 +8,53 @@ public class MethodModel extends BaseModel {
     private final String returnType;
     private final boolean isStatic;
     private final boolean isAbstract;
+    private final boolean isConstructor;
+    private String genericReturnType;
     private String parameters;
 
     public MethodModel(MethodDeclaration method, String arg) {
         super(method.getName().toString(), extractVisibility(method.getModifiers(), arg));
-        this.returnType = method.getType().asString();
+
+        this.returnType = method.getType().asString().replaceAll(",", ", ");
         this.isStatic = method.isStatic();
         this.isAbstract = method.isAbstract();
+        this.isConstructor = method.isConstructorDeclaration();
+        this.genericReturnType = extractGenericReturnType(method);
         this.buildParam(method);
     }
 
     private void buildParam(MethodDeclaration method) {
-        /*暂时没有处理 int a,b;这种声明的情况*/
         StringBuilder paramBuilder = new StringBuilder();
         method.getParameters().forEach(param -> {
             if (!paramBuilder.isEmpty()) {
                 paramBuilder.append(", ");
             }
-            paramBuilder.append(param.getNameAsString()).append(": ").append(param.getType().asString());
+            String paramName = param.getNameAsString();
+            String paramType = param.getType().asString().replaceAll(",", ", ");
+            paramBuilder.append(paramName).append(": ").append(paramType);
         });
         this.parameters = paramBuilder.toString();
     }
 
+    private String extractGenericReturnType(MethodDeclaration method) {
+        if (method.getTypeParameters().isEmpty())
+            return "";
+        String res = method.getTypeParameters().toString();
+        return res.replace("[", "<").replace("]", ">");
+    }
+
     public String generateString() {
-        // 排除构造函数
-        if (this.getName().equals(this.getVisibility())) {
+        if (isConstructor) {
             return "";
         }
         String visibility = getVisibility() + " ";
         String staticModifier = isStatic ? "{static} " : "";
         String abstractModifier = isAbstract ? "{abstract} " : "";
-        return visibility + staticModifier + abstractModifier + getName() + "(" + parameters + "): " + returnType;
+        String genericModifier = genericReturnType.isEmpty() ? "" : genericReturnType + " ";
+        return visibility + genericModifier + staticModifier + abstractModifier + getName() + "(" + parameters + "): " + returnType;
     }
 
+    public boolean isConstructor() {
+        return isConstructor;
+    }
 }

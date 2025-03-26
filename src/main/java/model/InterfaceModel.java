@@ -5,10 +5,14 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class InterfaceModel extends AbstractClassModel {
-    public InterfaceModel(ClassOrInterfaceDeclaration classOrInterface) {
-        super(classOrInterface);
-        parseFields(classOrInterface);
-        parseMethods(classOrInterface);
+    String GenericType;
+
+    public InterfaceModel(ClassOrInterfaceDeclaration decl) {
+        super(decl);
+        this.GenericType = extractGenericTypes(decl);
+
+        parseFields(decl);
+        parseMethods(decl);
         SortFieldsAndMethods();
     }
 
@@ -27,7 +31,7 @@ public class InterfaceModel extends AbstractClassModel {
     public String generateString() {
         String blank = "    ";
         StringBuilder sb = new StringBuilder();
-        sb.append("interface ").append(getName()).append(" {\n");
+        sb.append("interface ").append(getName()).append(GenericType).append(" {\n");
         for (MethodModel method : methods) {
             sb.append(blank).append(method.generateString()).append("\n");
         }

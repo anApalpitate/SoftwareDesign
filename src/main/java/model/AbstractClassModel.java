@@ -35,4 +35,12 @@ public abstract class AbstractClassModel extends BaseModel {
         if (!(methods == null))
             methods.sort(Comparator.comparing(MethodModel::getVisibility, CommonUtil::visibilityOrder));
     }
+
+    protected String extractGenericTypes(ClassOrInterfaceDeclaration decl) {
+        String res = decl.getTypeParameters().toString();
+        if (res.length() == 2)
+            return "";
+        return res.replace("[", "<").replace("]", ">");
+    }
+
 }

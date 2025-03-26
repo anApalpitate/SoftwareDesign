@@ -8,13 +8,13 @@ import java.util.List;
 public class EnumModel extends AbstractClassModel {
     private final List<String> constants;
 
-    public EnumModel(EnumDeclaration declaration) {
-        super(declaration);
-        constants = new ArrayList<>();
+    public EnumModel(EnumDeclaration decl) {
+        super(decl);
+        this.constants = new ArrayList<>();
 
-        parseConstants(declaration);
-        parseFields(declaration);
-        parseMethods(declaration);
+        parseConstants(decl);
+        parseFields(decl);
+        parseMethods(decl);
         SortFieldsAndMethods();
     }
 
@@ -52,7 +52,7 @@ public class EnumModel extends AbstractClassModel {
         sb.append("enum ").append(getName()).append(" {\n");
         for (String constant : constants)
             sb.append(blank).append(constant).append(",\n");
-        
+
         for (FieldModel field : fields)
             sb.append(blank).append(field.generateString()).append("\n");
         for (MethodModel method : methods)
