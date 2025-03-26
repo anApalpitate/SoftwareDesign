@@ -12,6 +12,7 @@ public class FieldModel extends BaseModel {
         super(getVariableName(field), extractVisibility(field.getModifiers(), arg));
         this.type = field.getVariable(0).getTypeAsString().replaceAll(",", ", "); //每个逗号后加空格
         this.isStatic = field.isStatic();
+        
     }
 
     private static String getVariableName(FieldDeclaration field) {

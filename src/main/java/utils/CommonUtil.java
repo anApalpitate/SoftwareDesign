@@ -46,7 +46,6 @@ public class CommonUtil {
             }
             return 0;
         });
-
     }
 
     public static boolean isBasicType(String type) {

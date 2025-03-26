@@ -3,11 +3,11 @@ package utils;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
+import graph.Relate;
 import model.AbstractClassModel;
 import model.ClassModel;
 import model.EnumModel;
 import model.InterfaceModel;
-import relate.Relate;
 
 public class Factory {
     public static AbstractClassModel classFactory(BodyDeclaration declaration) {

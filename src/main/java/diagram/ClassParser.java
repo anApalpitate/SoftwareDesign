@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import graph.Graph;
 import model.AbstractClassModel;
 import utils.CommonUtil;
 import utils.Factory;
@@ -17,15 +18,20 @@ import java.util.List;
 
 public class ClassParser {
     private final CompilationUnit root;
-    private final List<AbstractClassModel> classList;
+    private List<AbstractClassModel> classList;
+    private Graph graph;
 
     /*TODO：添加联系类以处理依赖和关联:在ClassModel的每次处理后返回找到的relate,将relate在这里加入队列
      *  构件关系的队列以方便3.1，3.2两个图算法的处理（就可以直接变成写力扣了捏）
      */
     ClassParser(File file) throws IOException {
-        this.classList = new ArrayList<>();
         this.root = StaticJavaParser.parse(file);
+        this.graph = new Graph();
+        classListInit();
+    }
 
+    private void classListInit() {
+        this.classList = new ArrayList<>();
         for (BodyDeclaration decl : root.findAll(BodyDeclaration.class)) {
             if (decl instanceof ClassOrInterfaceDeclaration || decl instanceof EnumDeclaration) {
                 AbstractClassModel classModel = Factory.classFactory(decl);
@@ -43,12 +49,11 @@ public class ClassParser {
             sb.append(classModel.generateString());
         }
         //TODO：关系的输出方式待优化
+        //sb.append(graph.generateString());
         addInheritance(sb);
         addImplement(sb);
-
         String suffix = "@enduml\n";
         sb.append(suffix);
-
         return sb.toString();
     }
 
