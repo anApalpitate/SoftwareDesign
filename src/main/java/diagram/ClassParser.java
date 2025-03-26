@@ -4,7 +4,9 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import model.ClassModel;
+import model.AbstractClassModel;
+import utils.CommonUtil;
+import utils.Factory;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,37 +15,28 @@ import java.util.List;
 
 public class ClassParser {
     private final CompilationUnit root;
-    private final List<ClassModel> classModels;
-    private final List<ClassModel> interfaces;
+    private final List<AbstractClassModel> classList;
 
     /*TODO：添加联系类以处理依赖和关联:在ClassModel的每次处理后返回找到的relate,将relate在这里加入队列
      *  构件关系的队列以方便3.1，3.2两个图算法的处理（就可以直接变成写力扣了捏）
      */
     ClassParser(File file) throws IOException {
-        this.classModels = new ArrayList<>();
-        this.interfaces = new ArrayList<>();
+        this.classList = new ArrayList<>();
         this.root = StaticJavaParser.parse(file);
-        System.out.println(file.getAbsolutePath());
-        for (ClassOrInterfaceDeclaration classOrInterface : root.findAll(ClassOrInterfaceDeclaration.class)) {
-            ClassModel classModel = new ClassModel(classOrInterface);
 
-            if (classModel.isInterface())
-                interfaces.add(classModel);
-            else
-                classModels.add(classModel);
+        for (ClassOrInterfaceDeclaration classOrInterface : root.findAll(ClassOrInterfaceDeclaration.class)) {
+            AbstractClassModel classModel = Factory.classFactory(classOrInterface);
+            classList.add(classModel);
         }
+        CommonUtil.sortClassList(classList);
     }
 
     public String generateUML() {
-
         StringBuilder sb = new StringBuilder();
         String prefix = "@startuml\n";
         sb.append(prefix);
-        for (ClassModel classModel : classModels) {
-            sb.append(classModel.toString());
-        }
-        for (ClassModel interfaceModel : interfaces) {
-            sb.append(interfaceModel.toString());
+        for (AbstractClassModel classModel : classList) {
+            sb.append(classModel.generateString());
         }
         //TODO：关系的输出方式待优化
         addInheritance(sb);

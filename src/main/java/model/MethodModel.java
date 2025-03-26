@@ -2,7 +2,7 @@ package model;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 
-import static utils.ModifierUtils.extractVisibility;
+import static utils.CommonUtil.extractVisibility;
 
 public class MethodModel extends BaseModel {
     private final String returnType;
@@ -29,8 +29,7 @@ public class MethodModel extends BaseModel {
         this.parameters = paramBuilder.toString();
     }
 
-    @Override
-    public String toString() {
+    public String generateString() {
         // 排除构造函数
         if (this.getName().equals(this.getVisibility())) {
             return "";

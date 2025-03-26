@@ -2,10 +2,13 @@ package utils;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
+import model.AbstractClassModel;
+import model.InterfaceModel;
 
+import java.util.List;
 import java.util.Map;
 
-public class ModifierUtils {
+public class CommonUtil {
     public static String extractVisibility(NodeList<Modifier> modifiers, String type) {
         if (modifiers.contains(Modifier.publicModifier())) {
             return "+"; //public
@@ -31,5 +34,18 @@ public class ModifierUtils {
         );
         return Integer.compare(visibilityOrder.getOrDefault(visibility1, 4),
                 visibilityOrder.getOrDefault(visibility2, 4));
+    }
+
+    public static void sortClassList(List<AbstractClassModel> classList) {
+        //Interface在最后，其余类顺序不变
+        classList.sort((model1, model2) -> {
+            if (model1 instanceof InterfaceModel && !(model2 instanceof InterfaceModel)) {
+                return 1;
+            } else if (!(model1 instanceof InterfaceModel) && model2 instanceof InterfaceModel) {
+                return -1;
+            }
+            return 0;
+        });
+
     }
 }

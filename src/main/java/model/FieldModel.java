@@ -2,7 +2,7 @@ package model;
 
 import com.github.javaparser.ast.body.FieldDeclaration;
 
-import static utils.ModifierUtils.extractVisibility;
+import static utils.CommonUtil.extractVisibility;
 
 public class FieldModel extends BaseModel {
     private final String type;
@@ -14,8 +14,7 @@ public class FieldModel extends BaseModel {
         this.isStatic = field.isStatic();
     }
 
-    @Override
-    public String toString() {
+    public String generateString() {
         String staticModifier = isStatic ? "{static} " : "";
         return getVisibility() + " " + staticModifier + getName() + ": " + type;
     }

@@ -1,6 +1,6 @@
 package model;
 
-public class BaseModel {
+abstract class BaseModel {
     protected String name;
     protected String visibility; // public, private, protected
 

@@ -1,36 +1,26 @@
 package model;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassModel extends AbstractClassModel {
-    private final boolean isAbstract;
-
-    public ClassModel(ClassOrInterfaceDeclaration classOrInterface) {
+public class InterfaceModel extends AbstractClassModel {
+    public InterfaceModel(ClassOrInterfaceDeclaration classOrInterface) {
         super(classOrInterface);
-        this.isAbstract = classOrInterface.isAbstract();
         parseMethods(classOrInterface);
         parseFields(classOrInterface);
         SortFieldsAndMethods();
     }
 
     void parseFields(ClassOrInterfaceDeclaration classOrInterface) {
-        List<FieldModel> fields = new ArrayList<>();
-        for (FieldDeclaration field : classOrInterface.getFields()) {
-            FieldModel fieldModel = new FieldModel(field, "");
-            fields.add(fieldModel);
-        }
-        this.fields = fields;
     }
 
     void parseMethods(ClassOrInterfaceDeclaration classOrInterface) {
         List<MethodModel> methods = new ArrayList<>();
         for (MethodDeclaration method : classOrInterface.getMethods()) {
-            methods.add(new MethodModel(method, ""));  // 调用 MethodClass 来解析方法
+            methods.add(new MethodModel(method, "interface"));
         }
         this.methods = methods;
     }
@@ -39,17 +29,11 @@ public class ClassModel extends AbstractClassModel {
     public String generateString() {
         String blank = "    ";
         StringBuilder sb = new StringBuilder();
-        String AbstractStr = isAbstract ? "abstract " : "";
-        sb.append(AbstractStr);
-        sb.append("class ").append(getName()).append(" {\n");
-        for (FieldModel field : fields) {
-            sb.append(blank).append(field.generateString()).append("\n");
-        }
+        sb.append("interface ").append(getName()).append(" {\n");
         for (MethodModel method : methods) {
             sb.append(blank).append(method.generateString()).append("\n");
         }
         sb.append("}\n");
         return sb.toString();
     }
-
 }
