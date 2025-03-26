@@ -2,7 +2,9 @@ package diagram;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import model.AbstractClassModel;
 import utils.CommonUtil;
@@ -24,9 +26,11 @@ public class ClassParser {
         this.classList = new ArrayList<>();
         this.root = StaticJavaParser.parse(file);
 
-        for (ClassOrInterfaceDeclaration classOrInterface : root.findAll(ClassOrInterfaceDeclaration.class)) {
-            AbstractClassModel classModel = Factory.classFactory(classOrInterface);
-            classList.add(classModel);
+        for (BodyDeclaration decl : root.findAll(BodyDeclaration.class)) {
+            if (decl instanceof ClassOrInterfaceDeclaration || decl instanceof EnumDeclaration) {
+                AbstractClassModel classModel = Factory.classFactory(decl);
+                classList.add(classModel);
+            }
         }
         CommonUtil.sortClassList(classList);
     }

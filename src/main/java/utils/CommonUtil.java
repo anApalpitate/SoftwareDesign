@@ -48,4 +48,17 @@ public class CommonUtil {
         });
 
     }
+
+    public static boolean isBasicType(String type) {
+        switch (type) {
+            case "int", "long", "float", "double", "boolean", "char", "byte", "short", "void",
+                 "Integer", "Long", "Float", "Double", "Boolean", "Character", "Byte", "Short", "String" -> {
+                return true;
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+    
 }

@@ -1,38 +1,39 @@
 package model;
 
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ClassModel extends AbstractClassModel {
     private final boolean isAbstract;
+    /*TODO:3.1在下方的两个parse过程中计数属性和方法的字段数，完成三个判断的方法*/
+    private boolean isDataClass;
+    private int fieldCnt; /*注意:field在处理int a,b,c的情况时应该是加3*/
+    private int methodCnt;/*注意区分构造方法*/
 
     public ClassModel(ClassOrInterfaceDeclaration classOrInterface) {
         super(classOrInterface);
         this.isAbstract = classOrInterface.isAbstract();
-        parseMethods(classOrInterface);
         parseFields(classOrInterface);
+        parseMethods(classOrInterface);
         SortFieldsAndMethods();
     }
 
-    void parseFields(ClassOrInterfaceDeclaration classOrInterface) {
-        List<FieldModel> fields = new ArrayList<>();
-        for (FieldDeclaration field : classOrInterface.getFields()) {
-            FieldModel fieldModel = new FieldModel(field, "");
-            fields.add(fieldModel);
+    void parseFields(BodyDeclaration declaration) {
+        if (declaration instanceof ClassOrInterfaceDeclaration classDecl) {
+            for (FieldDeclaration field : classDecl.getFields()) {
+                fields.add(new FieldModel(field, ""));
+            }
         }
-        this.fields = fields;
     }
 
-    void parseMethods(ClassOrInterfaceDeclaration classOrInterface) {
-        List<MethodModel> methods = new ArrayList<>();
-        for (MethodDeclaration method : classOrInterface.getMethods()) {
-            methods.add(new MethodModel(method, ""));  // 调用 MethodClass 来解析方法
+    void parseMethods(BodyDeclaration declaration) {
+        if (declaration instanceof ClassOrInterfaceDeclaration classDecl) {
+            for (MethodDeclaration method : classDecl.getMethods()) {
+                methods.add(new MethodModel(method, ""));
+            }
         }
-        this.methods = methods;
     }
 
 
@@ -42,14 +43,25 @@ public class ClassModel extends AbstractClassModel {
         String AbstractStr = isAbstract ? "abstract " : "";
         sb.append(AbstractStr);
         sb.append("class ").append(getName()).append(" {\n");
-        for (FieldModel field : fields) {
+
+        for (FieldModel field : fields)
             sb.append(blank).append(field.generateString()).append("\n");
-        }
-        for (MethodModel method : methods) {
+        for (MethodModel method : methods)
             sb.append(blank).append(method.generateString()).append("\n");
-        }
+
         sb.append("}\n");
         return sb.toString();
     }
 
+    public boolean isGodClass() {
+        return fieldCnt >= 20 && methodCnt >= 20;
+    }
+
+    public boolean isLazyClass() {
+        return fieldCnt == 0 && methodCnt <= 1;
+    }
+
+    public boolean isDataClass() {
+        return isDataClass;
+    }
 }

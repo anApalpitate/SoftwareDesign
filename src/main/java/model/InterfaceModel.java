@@ -1,28 +1,26 @@
 package model;
 
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class InterfaceModel extends AbstractClassModel {
     public InterfaceModel(ClassOrInterfaceDeclaration classOrInterface) {
         super(classOrInterface);
-        parseMethods(classOrInterface);
         parseFields(classOrInterface);
+        parseMethods(classOrInterface);
         SortFieldsAndMethods();
     }
 
-    void parseFields(ClassOrInterfaceDeclaration classOrInterface) {
+    void parseFields(BodyDeclaration declaration) {
     }
 
-    void parseMethods(ClassOrInterfaceDeclaration classOrInterface) {
-        List<MethodModel> methods = new ArrayList<>();
-        for (MethodDeclaration method : classOrInterface.getMethods()) {
-            methods.add(new MethodModel(method, "interface"));
+    void parseMethods(BodyDeclaration declaration) {
+        if (declaration instanceof ClassOrInterfaceDeclaration interfaceDecl) {
+            for (MethodDeclaration method : interfaceDecl.getMethods()) {
+                methods.add(new MethodModel(method, "interface"));
+            }
         }
-        this.methods = methods;
     }
 
 

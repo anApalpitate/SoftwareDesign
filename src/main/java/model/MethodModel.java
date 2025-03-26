@@ -19,6 +19,7 @@ public class MethodModel extends BaseModel {
     }
 
     private void buildParam(MethodDeclaration method) {
+        /*暂时没有处理 int a,b;这种声明的情况*/
         StringBuilder paramBuilder = new StringBuilder();
         method.getParameters().forEach(param -> {
             if (!paramBuilder.isEmpty()) {
@@ -37,7 +38,6 @@ public class MethodModel extends BaseModel {
         String visibility = getVisibility() + " ";
         String staticModifier = isStatic ? "{static} " : "";
         String abstractModifier = isAbstract ? "{abstract} " : "";
-        //WARNING:注意空格
         return visibility + staticModifier + abstractModifier + getName() + "(" + parameters + "): " + returnType;
     }
 

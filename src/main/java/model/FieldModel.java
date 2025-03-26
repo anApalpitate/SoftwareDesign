@@ -9,9 +9,14 @@ public class FieldModel extends BaseModel {
     private final boolean isStatic;
 
     public FieldModel(FieldDeclaration field, String arg) {
-        super(field.getVariable(0).getNameAsString(), extractVisibility(field.getModifiers(), arg));
+        super(getVariableName(field), extractVisibility(field.getModifiers(), arg));
         this.type = field.getVariable(0).getTypeAsString();
         this.isStatic = field.isStatic();
+    }
+
+    private static String getVariableName(FieldDeclaration field) {
+        String res = field.getVariables().toString();
+        return res.substring(1, res.length() - 1);
     }
 
     public String generateString() {
