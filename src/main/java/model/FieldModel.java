@@ -8,8 +8,8 @@ public class FieldModel extends BaseModel {
     private final String type;
     private final boolean isStatic;
 
-    public FieldModel(FieldDeclaration field, boolean isiInterface) {
-        super(field.getVariable(0).getNameAsString(), extractVisibility(field.getModifiers(), isiInterface));
+    public FieldModel(FieldDeclaration field, String arg) {
+        super(field.getVariable(0).getNameAsString(), extractVisibility(field.getModifiers(), arg));
         this.type = field.getVariable(0).getTypeAsString();
         this.isStatic = field.isStatic();
     }

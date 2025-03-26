@@ -1,70 +1,33 @@
 package diagram;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-
-import model.ClassModel;
-
 public class ClassDiagram {
-    private final CompilationUnit root;
-    private final List<ClassModel> classModels;
-    private final List<ClassModel> interfaces;
+    private ClassParser classParser;
 
-
-    ClassDiagram(CompilationUnit root) {
-        this.interfaces = new ArrayList<>();
-        this.classModels = new ArrayList<>();
-        this.root = root;
-
-        for (ClassOrInterfaceDeclaration classOrInterface : root.findAll(ClassOrInterfaceDeclaration.class)) {
-            ClassModel classModel = new ClassModel(classOrInterface);
-            if (classModel.isInterface())
-                interfaces.add(classModel);
-            else
-                classModels.add(classModel);
+    ClassDiagram(Path path) {
+        File file = path.toFile();
+        try {
+            this.classParser = new ClassParser(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
     public String generateUML() {
-        StringBuilder sb = new StringBuilder();
-        String prefix = "@startuml\n";
-        sb.append(prefix);
-
-        for (ClassModel classModel : classModels) {
-            sb.append(classModel.toString());
-        }
-        for (ClassModel interfaceModel : interfaces) {
-            sb.append(interfaceModel.toString());
-        }
-        addInheritance(sb); //继承
-        addImplement(sb); //实现
-
-        String suffix = "@enduml\n";
-        sb.append(suffix);
-
-        return sb.toString();
+        return classParser.generateUML();
     }
 
-    private void addInheritance(StringBuilder sb) {
-        root.findAll(ClassOrInterfaceDeclaration.class).forEach(classDecl -> {
-            List<ClassOrInterfaceType> extendedTypes = classDecl.getExtendedTypes();
-            for (ClassOrInterfaceType type : extendedTypes) {
-                sb.append(type.getNameAsString()).append(" <|-- ").append(classDecl.getNameAsString()).append("\n");
-            }
-        });
-    }
-
-    private void addImplement(StringBuilder sb) {
-        root.findAll(ClassOrInterfaceDeclaration.class).forEach(classDecl -> {
-            List<ClassOrInterfaceType> implementedTypes = classDecl.getImplementedTypes();
-            for (ClassOrInterfaceType type : implementedTypes) {
-                sb.append(type.getNameAsString()).append(" <|.. ").append(classDecl.getNameAsString()).append("\n");
-            }
-        });
+    /**
+     * 你应当在迭代二中实现这个方法
+     *
+     * @return 返回代码中的“坏味道”
+     */
+    public List<String> getCodeSmells() {
+        return null;
     }
 
 }
