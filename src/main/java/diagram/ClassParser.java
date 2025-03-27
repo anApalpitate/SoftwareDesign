@@ -16,18 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassParser {
-    private final CompilationUnit root;
     private List<AbstractClassModel> class_list;
     private Graph graph;
 
     ClassParser(File file) throws IOException {
-        this.root = StaticJavaParser.parse(file);
         this.graph = new Graph();
-        classListInit();
+        classListInit(file);
     }
 
-    private void classListInit() {
+    private void classListInit(File file) throws IOException {
         this.class_list = new ArrayList<>();
+        CompilationUnit root = StaticJavaParser.parse(file);
         for (BodyDeclaration decl : root.findAll(BodyDeclaration.class)) {
             if (decl instanceof ClassOrInterfaceDeclaration || decl instanceof EnumDeclaration) {
                 AbstractClassModel classModel = Factory.classFactory(decl);
@@ -52,7 +51,8 @@ public class ClassParser {
     }
 
     public List<String> getCodeSmells() {
-        return null;
+        SmellAnalyzer analyzer = new SmellAnalyzer(class_list, graph);
+        return analyzer.generateOutput();
     }
 
 

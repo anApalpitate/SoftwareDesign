@@ -17,10 +17,8 @@ public class ClassModel extends AbstractClassModel {
     Set<String> AssociatedClasses;
     Set<String> DependedClasses;
 
-    /*TODO:3.1在下方的两个parse过程中计数属性和方法的字段数，完成三个判断的方法*/
-    private boolean isDataClass = true;/*method中发现了非setter、getter方法则转false*/
-    private int fieldCnt; /*注意:field在处理int a,b,c的情况时应该是加3*/
-    private int methodCnt;/*注意区分构造方法*/
+    private int fieldCnt = 0; /*注意:field在处理int a,b,c的情况时应该是加3*/
+    private int methodCnt = 0;/*注意区分构造方法*/
 
     public ClassModel(ClassOrInterfaceDeclaration decl) {
         super(decl);
@@ -43,6 +41,7 @@ public class ClassModel extends AbstractClassModel {
                 FieldModel fieldModel = new FieldModel(field, "");
                 fields.add(fieldModel);
                 AssociatedClasses.addAll(fieldModel.getAssociations());
+                fieldCnt += fieldModel.getCnt();
             }
         }
     }
@@ -54,6 +53,7 @@ public class ClassModel extends AbstractClassModel {
                 MethodModel methodModel = new MethodModel(method, "");
                 methods.add(methodModel);
                 DependedClasses.addAll(methodModel.getDependencies());
+                methodCnt += (methodModel.isConstructor() ? 0 : 1);
             }
         }
     }
@@ -103,14 +103,20 @@ public class ClassModel extends AbstractClassModel {
     }
 
     public boolean isGodClass() {
-        return fieldCnt >= 20 && methodCnt >= 20;
+        return fieldCnt >= 20 || methodCnt >= 20;
     }
 
     public boolean isLazyClass() {
-        return fieldCnt == 0 && methodCnt <= 1;
+        return fieldCnt == 0 || methodCnt <= 1;
     }
 
     public boolean isDataClass() {
-        return isDataClass;
+        if (isGodClass() || isLazyClass())
+            return false;
+        for (MethodModel method : methods) {
+            if (!method.getName().startsWith("get") && !method.getName().startsWith("set"))
+                return false;
+        }
+        return true;
     }
 }

@@ -20,7 +20,7 @@ public class MethodModel extends BaseModel {
     private String parameterString;
     private List<String> dependencies;
 
-    public MethodModel(MethodDeclaration method, String arg) {
+    MethodModel(MethodDeclaration method, String arg) {
         super(method.getName().toString(), extractVisibility(method.getModifiers(), arg));
 
         this.returnType = method.getType().asString().replaceAll(",", ", ");

@@ -10,11 +10,13 @@ import static utils.CommonUtil.extractVisibility;
 public class FieldModel extends BaseModel {
     private final String type;
     private final boolean isStatic;
+    private final int cnt;
 
-    public FieldModel(FieldDeclaration field, String arg) {
+    FieldModel(FieldDeclaration field, String arg) {
         super(VariableToString(field), extractVisibility(field.getModifiers(), arg));
         this.type = field.getVariable(0).getTypeAsString().replaceAll(",", ", "); //每个逗号后加空格
         this.isStatic = field.isStatic();
+        this.cnt = field.getVariables().size();
     }
 
     private static String VariableToString(FieldDeclaration field) {
@@ -33,5 +35,9 @@ public class FieldModel extends BaseModel {
     public String generateString() {
         String staticModifier = isStatic ? "{static} " : "";
         return getVisibility() + " " + staticModifier + getName() + ": " + type;
+    }
+
+    public int getCnt() {
+        return cnt;
     }
 }
