@@ -17,17 +17,21 @@ public class ClassModel extends AbstractClassModel {
     Set<String> AssociatedClasses;
     Set<String> DependedClasses;
 
-    private int fieldCnt = 0; /*注意:field在处理int a,b,c的情况时应该是加3*/
-    private int methodCnt = 0;/*注意区分构造方法*/
+    /*注意:field在处理int a,b,c的情况时应该是加3*/
+    private int fieldCnt = 0;
+    /*注意区分构造方法*/
+    private int methodCnt = 0;
 
     public ClassModel(ClassOrInterfaceDeclaration decl) {
         super(decl);
         this.isAbstract = decl.isAbstract();
         this.GenericType = extractGenericTypes(decl);
 
+        /*解析域和方法*/
         parseFields(decl);
         parseMethods(decl);
         SortFieldsAndMethods();
+        /*类间关系分析*/
         addInheritancesAndImplementations(decl);
         addAssociations();
         addDependencies();

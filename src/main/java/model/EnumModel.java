@@ -27,6 +27,7 @@ public class EnumModel extends AbstractClassModel {
         addDependencies();
     }
 
+    /*解析枚举类的常数部分*/
     private void parseConstants(EnumDeclaration declaration) {
         for (EnumConstantDeclaration constant : declaration.getEntries()) {
             if (constant.getArguments().isEmpty()) {

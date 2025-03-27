@@ -9,6 +9,9 @@ import java.util.*;
 
 public class CommonUtil {
     public static String extractVisibility(NodeList<Modifier> modifiers, String type) {
+        /*依据输入的修饰符列表，返回对应的可访问性字符串
+         * type: 表示类型的补充说明符
+         */
         if (modifiers.contains(Modifier.publicModifier())) {
             return "+"; //public
         } else if (modifiers.contains(Modifier.protectedModifier())) {
@@ -25,6 +28,7 @@ public class CommonUtil {
     }
 
     public static int visibilityOrder(String visibility1, String visibility2) {
+        /*比较访问符的优先级，用于对访问符的排序*/
         Map<String, Integer> visibilityOrder = Map.of(
                 "-", 0,
                 "#", 1,
@@ -36,7 +40,7 @@ public class CommonUtil {
     }
 
     public static void sortClassList(List<AbstractClassModel> classList) {
-        //Interface在最后，其余类顺序不变
+        /*目标：将Interface排在最后，其余类顺序不变*/
         classList.sort((model1, model2) -> {
             if (model1 instanceof InterfaceModel && !(model2 instanceof InterfaceModel)) {
                 return 1;
@@ -65,13 +69,16 @@ public class CommonUtil {
     }
 
     public static List<String> parseType(String type) {
-        /*将类型字符串解析成类型列表*/
+        /*将类型字符串解析成类型列表
+         * 例: List<Map<String, Student>> → [List, Map, String, Student]
+         */
         Set<String> TypeSet = new HashSet<String>() {
         };
         if (type == null || type.isEmpty()) {
             return new ArrayList<>();
         }
         StringBuilder sb = new StringBuilder();
+        /*线性读取并拆分出完整的类型*/
         for (char c : type.toCharArray()) {
             if (Character.isLetterOrDigit(c)) {
                 sb.append(c);

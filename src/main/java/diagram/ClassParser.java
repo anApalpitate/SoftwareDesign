@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassParser {
+    private final Graph graph;
     private List<AbstractClassModel> class_list;
-    private Graph graph;
 
     ClassParser(File file) throws IOException {
         this.graph = new Graph();
@@ -29,6 +29,7 @@ public class ClassParser {
         CompilationUnit root = StaticJavaParser.parse(file);
         for (BodyDeclaration decl : root.findAll(BodyDeclaration.class)) {
             if (decl instanceof ClassOrInterfaceDeclaration || decl instanceof EnumDeclaration) {
+                /*采用简单工厂方法得到抽象类对应的具体类*/
                 AbstractClassModel classModel = Factory.classFactory(decl);
                 class_list.add(classModel);
             }
@@ -36,6 +37,7 @@ public class ClassParser {
         CommonUtil.sortClassList(class_list);
     }
 
+    /*UML 类部分输出*/
     public String generateUML() {
         StringBuilder sb = new StringBuilder();
         String prefix = "@startuml\n";
@@ -50,6 +52,7 @@ public class ClassParser {
         return sb.toString();
     }
 
+    /*输出坏味道*/
     public List<String> getCodeSmells() {
         SmellAnalyzer analyzer = new SmellAnalyzer(class_list, graph);
         return analyzer.generateOutput();

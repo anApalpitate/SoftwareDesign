@@ -39,9 +39,8 @@ public class MethodModel extends BaseModel {
         //返回值依赖
         set.addAll(CommonUtil.parseType(returnType));
         //局部变量依赖
-        method.findAll(VariableDeclarationExpr.class).forEach(varDecl -> {
-            set.addAll(CommonUtil.parseType(varDecl.getVariable(0).getTypeAsString()));
-        });
+        method.findAll(VariableDeclarationExpr.class).forEach(varDecl ->
+                set.addAll(CommonUtil.parseType(varDecl.getVariable(0).getTypeAsString())));
         this.dependencies = new ArrayList<>(set);
     }
 

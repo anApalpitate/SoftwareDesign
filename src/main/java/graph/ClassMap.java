@@ -4,17 +4,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class ClassMap {
-    private HashMap<String, HashSet<String>> map;
+    private final HashMap<String, HashSet<String>> map;
 
     public ClassMap() {
         this.map = new HashMap<>();
     }
 
     public boolean hasRelation(String src, String dst) {
+        /*查询是否存在src对dst的联系*/
         return map.containsKey(src) && map.get(src).contains(dst);
     }
 
     public void add(String src, String dst) {
+        /*添加src对dst的联系*/
         if (src == null || dst == null)
             return;
         if (src.equals(dst))
@@ -24,10 +26,24 @@ public class ClassMap {
     }
 
     public HashSet<String> get(String className) {
+        //找爸爸
         return map.getOrDefault(className, new HashSet<>());
     }
 
+    public HashSet<String> getReverse(String className) {
+        //找儿子
+        HashSet<String> result = new HashSet<>();
+        for (String src : map.keySet()) {
+            if (map.get(src).contains(className)) {
+                result.add(src);
+            }
+        }
+        return result;
+    }
+
+
     public String generateString(String connectionSymbol) {
+        /*生产字符串形式的输出*/
         StringBuilder sb = new StringBuilder();
         for (String src : map.keySet()) {
             for (String dst : map.get(src)) {
@@ -37,11 +53,12 @@ public class ClassMap {
         return sb.toString();
     }
 
-    public String generateStringWithFilter(String connectionSymbol, ClassMap classMap) {
+    public String generateStringWithFilter(String connectionSymbol, ClassMap filterMap) {
+        /*生产字符串形式的输出，过滤掉filterMap中已经存在的关系*/
         StringBuilder sb = new StringBuilder();
         for (String src : map.keySet()) {
             for (String dst : map.get(src)) {
-                if (!classMap.hasRelation(src, dst))
+                if (!filterMap.hasRelation(src, dst))
                     sb.append(dst).append(connectionSymbol).append(src).append("\n");
             }
         }
