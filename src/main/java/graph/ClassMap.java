@@ -10,6 +10,10 @@ public class ClassMap {
         this.map = new HashMap<>();
     }
 
+    public boolean hasRelation(String src, String dst) {
+        return map.containsKey(src) && map.get(src).contains(dst);
+    }
+
     public void add(String src, String dst) {
         if (src == null || dst == null)
             return;
@@ -28,6 +32,17 @@ public class ClassMap {
         for (String src : map.keySet()) {
             for (String dst : map.get(src)) {
                 sb.append(dst).append(connectionSymbol).append(src).append("\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    public String generateStringWithFilter(String connectionSymbol, ClassMap classMap) {
+        StringBuilder sb = new StringBuilder();
+        for (String src : map.keySet()) {
+            for (String dst : map.get(src)) {
+                if (!classMap.hasRelation(src, dst))
+                    sb.append(dst).append(connectionSymbol).append(src).append("\n");
             }
         }
         return sb.toString();

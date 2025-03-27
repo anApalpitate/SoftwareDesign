@@ -1,19 +1,20 @@
 package model;
 
 import com.github.javaparser.ast.body.FieldDeclaration;
+import utils.CommonUtil;
+
+import java.util.List;
 
 import static utils.CommonUtil.extractVisibility;
 
 public class FieldModel extends BaseModel {
     private final String type;
     private final boolean isStatic;
-    String className;
 
-    public FieldModel(FieldDeclaration field, String className, String arg) {
+    public FieldModel(FieldDeclaration field, String arg) {
         super(VariableToString(field), extractVisibility(field.getModifiers(), arg));
         this.type = field.getVariable(0).getTypeAsString().replaceAll(",", ", "); //每个逗号后加空格
         this.isStatic = field.isStatic();
-        this.className = className;
     }
 
     private static String VariableToString(FieldDeclaration field) {
@@ -24,9 +25,10 @@ public class FieldModel extends BaseModel {
         return res.replace("[", "").replace("]", "");
     }
 
-    public String getClassName() {
-        return className;
+    public List<String> getAssociations() {
+        return CommonUtil.parseType(type);
     }
+
 
     public String generateString() {
         String staticModifier = isStatic ? "{static} " : "";

@@ -17,9 +17,9 @@ import java.util.List;
 
 public class ClassParser {
     private final CompilationUnit root;
-    private List<AbstractClassModel> classList;
+    private List<AbstractClassModel> class_list;
     private Graph graph;
-    
+
     ClassParser(File file) throws IOException {
         this.root = StaticJavaParser.parse(file);
         this.graph = new Graph();
@@ -27,27 +27,32 @@ public class ClassParser {
     }
 
     private void classListInit() {
-        this.classList = new ArrayList<>();
+        this.class_list = new ArrayList<>();
         for (BodyDeclaration decl : root.findAll(BodyDeclaration.class)) {
             if (decl instanceof ClassOrInterfaceDeclaration || decl instanceof EnumDeclaration) {
                 AbstractClassModel classModel = Factory.classFactory(decl);
-                classList.add(classModel);
+                class_list.add(classModel);
             }
         }
-        CommonUtil.sortClassList(classList);
+        CommonUtil.sortClassList(class_list);
     }
 
     public String generateUML() {
         StringBuilder sb = new StringBuilder();
         String prefix = "@startuml\n";
+        String suffix = "@enduml\n";
+
         sb.append(prefix);
-        for (AbstractClassModel classModel : classList) {
+        for (AbstractClassModel classModel : class_list) {
             sb.append(classModel.generateString());
         }
         sb.append(graph.generateString());
-        String suffix = "@enduml\n";
         sb.append(suffix);
         return sb.toString();
+    }
+
+    public List<String> getCodeSmells() {
+        return null;
     }
 
 

@@ -51,7 +51,8 @@ public class Graph {
         return inheritanceMap.generateString(" <|-- ") +
                 implementationMap.generateString(" <|.. ") +
                 associationMap.generateString(" <-- ") +
-                dependencyMap.generateString(" <.. ");
+                /*已经建立关联的类不再绘制依赖*/
+                dependencyMap.generateStringWithFilter(" <.. ", associationMap);
     }
 
 }

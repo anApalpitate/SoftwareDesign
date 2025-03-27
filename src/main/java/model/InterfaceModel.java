@@ -5,9 +5,14 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import graph.Graph;
+import utils.CommonUtil;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class InterfaceModel extends AbstractClassModel {
     String GenericType;
+    Set<String> DependedClasses;
 
     public InterfaceModel(ClassOrInterfaceDeclaration decl) {
         super(decl);
@@ -18,15 +23,20 @@ public class InterfaceModel extends AbstractClassModel {
         SortFieldsAndMethods();
 
         findInheritances(decl);
+        addDependencies();
     }
 
     void parseFields(BodyDeclaration declaration) {
     }
 
     void parseMethods(BodyDeclaration declaration) {
+        this.DependedClasses = new HashSet<>();
+
         if (declaration instanceof ClassOrInterfaceDeclaration interfaceDecl) {
             for (MethodDeclaration method : interfaceDecl.getMethods()) {
-                methods.add(new MethodModel(method, getName(), "interface"));
+                MethodModel methodModel = new MethodModel(method, "interface");
+                methods.add(methodModel);
+                DependedClasses.addAll(methodModel.getDependencies());
             }
         }
     }
@@ -39,6 +49,13 @@ public class InterfaceModel extends AbstractClassModel {
         }
     }
 
+    private void addDependencies() {
+        for (String dependedClass : DependedClasses) {
+            if (CommonUtil.isBasicType(dependedClass))
+                continue;
+            Graph.addDependency(getName(), dependedClass);
+        }
+    }
 
     public String generateString() {
         String blank = "    ";

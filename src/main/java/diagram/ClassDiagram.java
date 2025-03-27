@@ -20,14 +20,9 @@ public class ClassDiagram {
     public String generateUML() {
         return classParser.generateUML();
     }
-
-    /**
-     * 你应当在迭代二中实现这个方法
-     *
-     * @return 返回代码中的“坏味道”
-     */
+    
     public List<String> getCodeSmells() {
-        return null;
+        return classParser.getCodeSmells();
     }
 
 }

@@ -5,8 +5,7 @@ import com.github.javaparser.ast.NodeList;
 import model.AbstractClassModel;
 import model.InterfaceModel;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommonUtil {
     public static String extractVisibility(NodeList<Modifier> modifiers, String type) {
@@ -65,5 +64,29 @@ public class CommonUtil {
         }
     }
 
-
+    public static List<String> parseType(String type) {
+        /*将类型字符串解析成类型列表*/
+        Set<String> TypeSet = new HashSet<String>() {
+        };
+        if (type == null || type.isEmpty()) {
+            return new ArrayList<>();
+        }
+        StringBuilder sb = new StringBuilder();
+        for (char c : type.toCharArray()) {
+            if (Character.isLetterOrDigit(c)) {
+                sb.append(c);
+            } else {
+                if (!sb.isEmpty()) {
+                    String name = sb.toString();
+                    TypeSet.add(name);
+                    sb.setLength(0);
+                }
+            }
+        }
+        if (!sb.isEmpty()) {
+            String finalType = sb.toString();
+            TypeSet.add(finalType);
+        }
+        return new ArrayList<>(TypeSet);
+    }
 }
