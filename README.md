@@ -1,25 +1,15 @@
-## 项目简介
+## 使用打包脚本创建压缩包
 
-设计并用Java代码实现一个 为Java代码自动生成plantUML类图的工具
+### Linux
 
-## 项目结构
+```bash
+chmod +x package.sh
+./package.sh
+```
 
-src
-├── main                # 项目主文件夹
-│   ├── java            # Java 源代码
-│   │   ├── Main.java   # 程序入口
-│   │   │
-│   │   ├── diagram     # 文件读入与类图生成
-│   │   │   ├── ClassDiagram.java
-│   │   │   └── ClassDiagramGenerator.java
-│   │   │
-│   │   ├── model       # 数据模型
-│   │   │   ├── BaseModel.java
-│   │   │   ├── ClassModel.java
-│   │   │   ├── FieldModel.java
-│   │   │   └── MethodModel.java
-│   │   │
-│   │   └── utils       # 工具函数
-│   │       └── ModifierUtils.java
-│   │
-└── test                # 项目测试文件夹
+### 跨平台
+
+```bash
+python package.py
+```
+

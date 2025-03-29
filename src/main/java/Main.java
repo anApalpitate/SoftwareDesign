@@ -1,23 +1,16 @@
+import java.io.IOException;
+import java.nio.file.Paths;
+
 import diagram.ClassDiagram;
 import diagram.ClassDiagramGenerator;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-
 public class Main {
     public static void main(String[] args) throws IOException {
+        // 创建一个ClassDiagramGenerator对象
         ClassDiagramGenerator generator = new ClassDiagramGenerator();
-        Path cwd = Paths.get(System.getProperty("user.dir")).resolve("./src/main/Main.java"); // 获取当前文件路径
-        Path path = Paths.get("../../test/resources/lab2/SimpleInheritanceTree.java");  //本地测试时路径自行更换
-
-        ClassDiagram diagram = generator.parse(cwd.resolve(path).normalize());
-        String uml = diagram.generateUML();
-        System.out.println(uml);
-
-        for (String smell : diagram.getCodeSmells())
-            System.out.println(smell);
+        // 解析指定路径下的Animal.java文件，生成ClassDiagram对象
+        ClassDiagram diagram = generator.parse(Paths.get("path of java file"));
+        // 输出生成的UML图
+        System.out.println(diagram.generateUML());
     }
 }
-

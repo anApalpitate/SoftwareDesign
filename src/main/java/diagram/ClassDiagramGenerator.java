@@ -5,8 +5,8 @@ import java.nio.file.Path;
 
 public class ClassDiagramGenerator {
     // 解析源文件路径，返回ClassDiagram对象
-    public ClassDiagram parse(Path path) throws IOException {
+    public ClassDiagram parse(Path sourcePath) throws IOException {
         // 返回ClassDiagram对象
-        return new ClassDiagram(path);
+        return null;
     }
 }
