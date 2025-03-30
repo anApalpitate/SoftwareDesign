@@ -37,32 +37,32 @@ public class Graph {
         dependencyMap.add(className, relatedClassName);
     }
 
-    public HashSet<String> getInheritance(String src) {
+    public static HashSet<String> getInheritance(String src) {
         /*获取当前类继承的类集合*/
         return inheritanceMap.get(src);
     }
 
-    public HashSet<String> getReverseInheritance(String src) {
+    public static HashSet<String> getReverseInheritance(String src) {
         /*获取继承当前类的类集合*/
         return inheritanceMap.getReverse(src);
     }
 
-    public HashSet<String> getImplementation(String src) {
+    public static HashSet<String> getImplementation(String src) {
         /*获取当前类的实现类集合 */
         return implementationMap.get(src);
     }
 
-    public HashSet<String> getAssociation(String src) {
+    public static HashSet<String> getAssociation(String src) {
         /*获取当前类的关联类集合*/
         return associationMap.get(src);
     }
 
-    public HashSet<String> getDependency(String src) {
+    public static HashSet<String> getDependency(String src) {
         /*获取当前类的依赖类集合*/
         return dependencyMap.get(src);
     }
 
-    public HashSet<String> getReverseDependency(String src) {
+    public static HashSet<String> getReverseDependency(String src) {
         /*获取依赖当前类的类集合*/
         return dependencyMap.getReverse(src);
     }
