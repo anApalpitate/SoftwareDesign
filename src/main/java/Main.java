@@ -9,7 +9,7 @@ public class Main {
         // 创建一个ClassDiagramGenerator对象
         ClassDiagramGenerator generator = new ClassDiagramGenerator();
         // 解析指定路径下的Animal.java文件，生成ClassDiagram对象
-        ClassDiagram diagram = generator.parse(Paths.get("path of java file"));
+        ClassDiagram diagram = generator.parse(Paths.get("D:\\acodes\\software_design\\lab1\\software_group_31\\src\\test\\resources\\lab1\\MultiField.java"));
         // 输出生成的UML图
         System.out.println(diagram.generateUML());
     }
