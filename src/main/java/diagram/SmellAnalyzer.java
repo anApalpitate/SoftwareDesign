@@ -1,5 +1,6 @@
 package diagram;
 
+import graph.ClassMap;
 import graph.Graph;
 import model.AbstractClassModel;
 import model.ClassModel;
@@ -16,37 +17,15 @@ public class SmellAnalyzer {
         this.graph = graph;
         this.output = new ArrayList<>();
     }
-    private void dfsCheckInheritanceDepth(String className, LinkedList<String> path) {
-//        过深的继承树
-//        if (depth >= 5) {
-//            output.add("Inheritance Abuse: " + className);
-//        }
-//
-//        for (String child : Graph.getReverseInheritance(className)) {
-//            dfsCheckInheritanceDepth(child, depth + 1);
-//        }
-        path.add(className);
 
-        if (path.size() >= 6) {
-            StringBuilder sb = new StringBuilder("Inheritance Abuse: ");
-            for (int i = 0; i < path.size(); i++) {
-                sb.append(path.get(i));
-                if (i != path.size() - 1) {
-                    sb.append(" <|-- ");
-                }
-            }
-            output.add(sb.toString());
-
-        }
-
-        for (String child : Graph.getReverseInheritance(className)) {
-            dfsCheckInheritanceDepth(child, path);
-        }
-
-        path.removeLast();
+    public List<String> generateOutput() {
+        ClassAnalyze();
+        InheritanceTreeAnalyze();
+        CircularDependencyAnalyze();
+        return output;
     }
 
-    private void classAnalyze() {
+    private void ClassAnalyze() {
         /*识别God Class、Lazy Class 、Data Class*/
         List<String> GodClassBuffer = new ArrayList<>();
         List<String> LazyClassBuffer = new ArrayList<>();
@@ -66,116 +45,95 @@ public class SmellAnalyzer {
         output.addAll(DataClassBuffer);
     }
 
-    void inheritanceTreeAnalyze() {
-        //TODO:完成继承树的分析
-        /*
-         * Inheritance Abuse 思路: 对inheritanceMap做DFS,需要记录一条最长路径以便输出到smell
-         *Too Many Children 思路:对
-         * 得到的List<String>加入output
-         */
+    void InheritanceTreeAnalyze() {
         Set<String> allClasses = new HashSet<>();
         for (AbstractClassModel model : classModels) {
             allClasses.add(model.getName());
         }
-
         // 找出没有父类的类（即根节点）
         Set<String> roots = new HashSet<>(allClasses);
         for (String className : allClasses) {
-            if (!Graph.getInheritance(className).isEmpty()) {
+            if (!graph.getInheritance(className).isEmpty()) {
                 // 找爸爸，有爸爸，排除
                 roots.remove(className);
             }
         }
-
         // Too Many Children 分析
         for (String className : allClasses) {
-            HashSet<String> children = Graph.getReverseInheritance(className);
+            HashSet<String> children = graph.getReverseInheritance(className);
             if (children.size() >= 10) {
                 output.add("Too Many Children: " + className);
             }
         }
-
         // Inheritance Abuse 分析：从每个 root 开始 DFS
         for (String root : roots) {
-            dfsCheckInheritanceDepth(root, new LinkedList<>());
+            DfsCheckDepth(root, new LinkedList<>());
         }
     }
 
-
-
     void CircularDependencyAnalyze() {
-        //TODO:完成循环依赖分析
-        /*
-         * 对图进行拓扑排序
-         * 得到的List<String>或者String加入output
-         */
-        Map<String, List<String>> graph = new HashMap<>();
-
-        Set<String> allClasses = new HashSet<>();
-        for (AbstractClassModel model : classModels) {
-            allClasses.add(model.getName());
-        }
-
-        for (String cls : allClasses) {
-            List<String> deps = new ArrayList<>();
-            deps.addAll(Graph.getInheritance(cls));
-            deps.addAll(Graph.getImplementation(cls));
-            deps.addAll(Graph.getAssociation(cls));
-            deps.addAll(Graph.getDependency(cls));
-            graph.put(cls, deps);
-        }
-
-        Set<String> visited = new HashSet<>();
-        Set<String> inStack = new HashSet<>();
+        /*由于样例中至多有一个环，此处仅设计了支持输出最多一个环的算法*/
+        ClassMap newGraph = graph.getMergedMap();
         LinkedList<String> path = new LinkedList<>();
-
-        for (String cls : allClasses) {
-            if (dfs_isCycle(cls, graph, visited, inStack, path)) {
+        for (String cls : newGraph.getKeys()) {
+            if (IsCycleByDFS(cls, newGraph, new HashSet<>(), new HashSet<>(), path)) {
                 formatCycleOutput(path);
                 return;
             }
         }
     }
+
+    private void DfsCheckDepth(String className, LinkedList<String> path) {
+        // 过深继承树
+        path.add(className);
+        if (path.size() >= 6) {
+            StringBuilder sb = new StringBuilder("Inheritance Abuse: ");
+            for (int i = 0; i < path.size(); i++) {
+                sb.append(path.get(i));
+                if (i != path.size() - 1) {
+                    sb.append(" <|-- ");
+                }
+            }
+            output.add(sb.toString());
+
+        }
+        for (String child : graph.getReverseInheritance(className)) {
+            DfsCheckDepth(child, path);
+        }
+        path.removeLast();
+    }
+
     private void formatCycleOutput(List<String> path) {
-        // path: [..., X, ..., Y, Z, X] 需要裁剪成环并格式化为 Circular Dependency: <A类名> <.. <B类名> <.. <C类名> <.. ... <.. <A类名>
-        String start = path.get(path.size() - 1);
-        int startIdx = path.indexOf(start);
-
-        List<String> cycle = path.subList(startIdx, path.size());
+        // path: [..., X, ..., Y, Z, X]
+        // 该函数中将path并格式化为 Circular Dependency: <A类名> <.. <B类名> <.. <C类名> <.. ... <.. <A类名>
         StringBuilder sb = new StringBuilder("Circular Dependency: ");
-
-        for (int i =cycle.size()-1; i>=0; i--) {
-            sb.append(cycle.get(i));
-            if (i !=0) sb.append(" <.. ");
+        int n = path.size();
+        int startIdx = 0; //起始位置可以自行更改
+        sb.append(path.get(startIdx));
+        for (int i = 0; i < n; i++) {
+            sb.append(" <.. ");
+            //沿path向前
+            startIdx = (startIdx + n - 1) % n;
+            sb.append(path.get(startIdx));
         }
         output.add(sb.toString());
     }
-    private boolean dfs_isCycle(String current, Map<String, List<String>> graph,
-                        Set<String> visited, Set<String> inStack, LinkedList<String> path) {
-        if (inStack.contains(current)) {
-            path.add(current);
+
+    private boolean IsCycleByDFS(String node, ClassMap classMap,
+                                 Set<String> visited, Set<String> stack, LinkedList<String> path) {
+        if (stack.contains(node)) /*栈内节点重复，存在环*/
             return true;
+        if (visited.contains(node))/*节点已访问，跳过*/
+            return false;
+        visited.add(node);//当前节点已访问
+        stack.add(node);//当前节点入栈
+        path.add(node);
+        for (String adj : classMap.get(node)) {
+            if (IsCycleByDFS(adj, classMap, visited, stack, path))
+                return true;
         }
-        if (visited.contains(current)) return false;
-
-        visited.add(current);
-        inStack.add(current);
-        path.add(current);
-
-        for (String neighbor : graph.getOrDefault(current, List.of())) {
-            if (dfs_isCycle(neighbor, graph, visited, inStack, path)) return true;
-        }
-
-        inStack.remove(current);
+        stack.remove(node);
         path.removeLast();
         return false;
     }
-
-    public List<String> generateOutput() {
-        classAnalyze();
-        CircularDependencyAnalyze();
-        inheritanceTreeAnalyze();
-        return output;
-    }
-
 }

@@ -1,7 +1,9 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class ClassMap {
     private final HashMap<String, HashSet<String>> map;
@@ -23,6 +25,11 @@ public class ClassMap {
             return;
         map.putIfAbsent(src, new HashSet<>());
         map.get(src).add(dst);
+    }
+
+    public void addAll(String src, HashSet<String> dsts) {
+        for (String dst : dsts)
+            add(src, dst);
     }
 
     public HashSet<String> get(String className) {
@@ -63,5 +70,16 @@ public class ClassMap {
             }
         }
         return sb.toString();
+    }
+
+    public List<String> getKeys() {
+        return new ArrayList<>(map.keySet());
+    }
+
+    public ClassMap MergeWith(ClassMap other) {
+        for (String key : other.getKeys()) {
+            addAll(key, other.get(key));
+        }
+        return this;
     }
 }

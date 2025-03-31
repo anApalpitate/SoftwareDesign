@@ -17,55 +17,51 @@ public class Graph {
     //API如有需要，请继续补充：
 
     public static void addInheritance(String className, String relatedClassName) {
-        /*添加新的继承关系(子类，父类)*/
+        /*添加新继承关系(子类，父类)*/
         inheritanceMap.add(className, relatedClassName);
     }
 
     public static void addImplementation(String className, String relatedClassName) {
-        /*添加新的实现关系(当前类，被实现类 )*/
+        /*添加新实现关系(当前类，被实现类 )*/
         implementationMap.add(className, relatedClassName);
     }
 
 
     public static void addAssociation(String className, String relatedClassName) {
-        /*添加新的关联关系(当前类，被关联类 )*/
+        /*添加新关联关系(当前类，被关联类 )*/
         associationMap.add(className, relatedClassName);
     }
 
     public static void addDependency(String className, String relatedClassName) {
-        /*添加新的依赖关系(当前类，被依赖类 )*/
+        /*添加新依赖关系(当前类，被依赖类 )*/
         dependencyMap.add(className, relatedClassName);
     }
 
-    public static HashSet<String> getInheritance(String src) {
+    public HashSet<String> getInheritance(String src) {
         /*获取当前类继承的类集合*/
         return inheritanceMap.get(src);
     }
 
-    public static HashSet<String> getReverseInheritance(String src) {
+    public HashSet<String> getReverseInheritance(String src) {
         /*获取继承当前类的类集合*/
         return inheritanceMap.getReverse(src);
     }
 
-    public static HashSet<String> getImplementation(String src) {
+    public HashSet<String> getImplementation(String src) {
         /*获取当前类的实现类集合 */
         return implementationMap.get(src);
     }
 
-    public static HashSet<String> getAssociation(String src) {
+    public HashSet<String> getAssociation(String src) {
         /*获取当前类的关联类集合*/
         return associationMap.get(src);
     }
 
-    public static HashSet<String> getDependency(String src) {
+    public HashSet<String> getDependency(String src) {
         /*获取当前类的依赖类集合*/
         return dependencyMap.get(src);
     }
 
-    public static HashSet<String> getReverseDependency(String src) {
-        /*获取依赖当前类的类集合*/
-        return dependencyMap.getReverse(src);
-    }
 
     public String generateString() {
         return inheritanceMap.generateString(" <|-- ") +
@@ -75,5 +71,11 @@ public class Graph {
                 dependencyMap.generateStringWithFilter(" <.. ", associationMap);
     }
 
-
+    public ClassMap getMergedMap() {
+        return inheritanceMap
+                .MergeWith(implementationMap)
+                .MergeWith(associationMap)
+                .MergeWith(dependencyMap);
+    }
+    
 }

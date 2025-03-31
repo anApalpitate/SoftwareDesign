@@ -72,7 +72,7 @@ public class CommonUtil {
         /*将类型字符串解析成类型列表
          * 例: List<Map<String, Student>> → [List, Map, String, Student]
          */
-        Set<String> TypeSet = new HashSet<String>() {
+        Set<String> TypeSet = new HashSet<>() {
         };
         if (type == null || type.isEmpty()) {
             return new ArrayList<>();
