@@ -1,6 +1,17 @@
 package lab2;
 
 class X {
+    private Y y;
+
+    public Y getY() {
+        return y;
+    }
+
+    public void clear() {
+    }
+}
+
+class Y {
     private Z z;
 
     public Z getZ() {
@@ -11,7 +22,7 @@ class X {
     }
 }
 
-class Y {
+class Z {
     private X x;
 
     public X getX() {
@@ -22,11 +33,11 @@ class Y {
     }
 }
 
-class Z {
-    private Y y;
+class A {
+    private X x;
 
-    public Y getY() {
-        return y;
+    public X getX() {
+        return x;
     }
 
     public void clear() {
