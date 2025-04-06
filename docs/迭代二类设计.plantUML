@@ -1,0 +1,106 @@
+' @startuml
+' skinparam linetype ortho
+' left to right direction
+' package diagram
+' {
+'     class ClassDiagram{}
+'     class ClassDiagramGenerator{}
+'     class ClassParser{}
+'     class SmellAnalyzer{}
+' }
+
+' package graph
+' {
+'     class ClassMap{}
+'     class Graph{}
+' }
+
+' package model
+' {
+'     abstract class AbstractClassModel{}
+'     abstract class BaseModel{}
+'     class ClassModel{}
+'     class EnumModel{}
+'     class InterFaceModel{}
+'     class FieldModel{}
+'     class MethodModel{}
+' }
+
+' package utils
+' {
+'     class AnalyzerUtil{}
+'     class CommonUtil{}
+'     class Factory{}
+' }
+
+' AbstractClassModel -|> BaseModel
+' ClassModel -|> AbstractClassModel
+' EnumModel -|> AbstractClassModel
+' InterFaceModel -|> AbstractClassModel
+' FieldModel -left|> BaseModel
+' MethodModel -|> BaseModel
+' AbstractClassModel *-- FieldModel
+' AbstractClassModel *-- MethodModel
+
+' Graph --> ClassMap
+' SmellAnalyzer --> AnalyzerUtil
+' SmellAnalyzer --> Graph
+' ClassDiagram -up-> ClassParser
+' ClassDiagramGenerator .up.> ClassDiagram
+' ClassParser .up.> SmellAnalyzer
+' Factory --> AbstractClassModel
+
+' @enduml
+
+@startuml
+enum VehicleState {
+    RUNNING
+    STOPPED
+    MAINTENANCE
+}
+abstract class AbstractVehicle {
+    # licensePlate: String
+    # state: VehicleState
+    + getLicensePlate(): String
+}
+class Car {
+    + start(): VehicleState
+    + stop(): VehicleState
+}
+class SportsCar {
+    - horsepower: int
+    + start(): VehicleState
+}
+class Garage {
+    - vehicleMap: Map<String, Vehicle>
+    - maintenanceService: VehicleService<Vehicle>
+    + addVehicle(key: String, vehicle: Vehicle): void
+    + getVehiclesByState(): Map<VehicleState, List<Vehicle>>
+}
+class VehicleService<T extends Vehicle> {
+    + groupByState(vehicles: List<T>): Map<VehicleState, List<T>>
+}
+class Main {
+    + {static} main(args: String[]): void
+}
+interface Vehicle {
+    + start(): VehicleState
+    + stop(): VehicleState
+}
+Car <|-- SportsCar
+AbstractVehicle <|-- Car
+Vehicle <|.. AbstractVehicle
+Vehicle <-- Garage
+VehicleService <-- Garage
+VehicleState <-- AbstractVehicle
+VehicleState <.. Vehicle
+VehicleState <.. SportsCar
+VehicleState <.. Garage
+VehicleState <.. Car
+VehicleState <.. VehicleService
+T <.. VehicleService
+Vehicle <.. Main
+Garage <.. Main
+VehicleState <.. Main
+VehicleService <.. Main
+@enduml
