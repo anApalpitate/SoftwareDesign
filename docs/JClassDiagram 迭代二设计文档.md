@@ -56,23 +56,23 @@
 
 #### 迭代一类图
 
-![41ed22f46188a1188ca630606c723399](C:\Users\HUIPU\Desktop\41ed22f46188a1188ca630606c723399.png)
+<img src="./assets/image-20250407153743680.png" alt="image-20250407153743680" style="zoom:50%;" />
 
 
 
 #### 迭代二类图
 
-![637e8bc8b3fef35e969d436424d6e3c](C:\Users\HUIPU\Desktop\637e8bc8b3fef35e969d436424d6e3c.png)
+<img src="./assets/image-20250407153801247.png" alt="image-20250407153801247" style="zoom:67%;" />
 
 
 
 #### 设计模式
 
-**工厂模式：**Factory 类用于统一创建模型对象，避免直接使用构造函数，有利于集中管理对象创建逻辑。
+**工厂模式：**Factory 类用于统一创建模型对象，避免直接使用构造函数，有利于集中管理对象创建逻辑
 
-**抽象工厂 / 策略模式：** 在 model 包中，AbstractClassModel 提供统一的抽象接口，子类分别实现不同的行为逻辑。SmellAnalyzer 可以基于不同子类选择对应策略。
+**抽象工厂 / 策略模式：** 在 model 包中，AbstractClassModel 提供统一的抽象接口，子类分别实现不同的行为逻辑。SmellAnalyzer 可以基于不同子类选择对应策略
 
-**外观模式：**SmellAnalyzer 封装了类图解析、模型分析等多个子系统，对外提供简化的接口。
+**外观模式：**SmellAnalyzer 封装了类图解析、模型分析等多个子系统，对外提供简化的接口
 
 
 
@@ -174,4 +174,4 @@
 
 ### 运行结果
 
-![image-20250402163052247](C:\Users\HUIPU\AppData\Roaming\Typora\typora-user-images\image-20250402163052247.png)
+<img src="./assets/image-20250407153816106.png" alt="image-20250407153816106" style="zoom:67%;" />
