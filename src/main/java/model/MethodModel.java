@@ -1,14 +1,14 @@
 package model;
 
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
-import utils.CommonUtil;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+
+import utils.CommonUtil;
 import static utils.CommonUtil.extractVisibility;
 
 public class MethodModel extends BaseModel {
@@ -87,4 +87,12 @@ public class MethodModel extends BaseModel {
         return dependencies;
     }
 
+    // 添加 isStatic() 方法
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public String getReturnType() {
+        return returnType;
+    }
 }

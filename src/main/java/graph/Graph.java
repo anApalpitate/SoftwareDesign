@@ -78,4 +78,8 @@ public class Graph {
                 .MergeWith(dependencyMap);
     }
     
+    public HashSet<String> getRelations(String className) {
+        // 实现获取关系的逻辑
+        return new HashSet<>(); 
+    }
 }

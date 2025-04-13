@@ -1,15 +1,17 @@
 package model;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+
 import graph.Graph;
 import utils.CommonUtil;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class ClassModel extends AbstractClassModel {
     private final boolean isAbstract;
@@ -122,5 +124,15 @@ public class ClassModel extends AbstractClassModel {
                 return false;
         }
         return true;
+    }
+
+    public List<MethodModel> getMethods() {
+        // 假设 methods 是存储方法的列表
+        return methods; 
+    }
+
+    public List<FieldModel> getFields() {
+        // 假设 fields 是存储字段的列表
+        return fields; 
     }
 }
