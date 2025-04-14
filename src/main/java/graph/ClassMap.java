@@ -6,10 +6,17 @@ import java.util.HashSet;
 import java.util.List;
 
 public class ClassMap {
-    private final HashMap<String, HashSet<String>> map;
+    private  HashMap<String, HashSet<String>> map;
 
     public ClassMap() {
         this.map = new HashMap<>();
+    }
+
+    public ClassMap(ClassMap other) {
+        this.map = new HashMap<>();
+        for (String key : other.map.keySet()) {
+            this.map.put(key, new HashSet<>(other.map.get(key)));
+        }
     }
 
     public boolean hasRelation(String src, String dst) {
@@ -82,4 +89,15 @@ public class ClassMap {
         }
         return this;
     }
+
+    public void remove(String className) {
+        // 删除以 className 为源的所有关系
+        map.remove(className);
+
+        // 删除所有以 className 为目标的关系
+        for (String key : new HashSet<>(map.keySet())) {
+            map.get(key).remove(className);
+        }
+    }
+
 }

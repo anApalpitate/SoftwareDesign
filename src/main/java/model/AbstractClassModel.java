@@ -27,6 +27,11 @@ public abstract class AbstractClassModel extends BaseModel {
         methods = new ArrayList<>();
     }
 
+    public AbstractClassModel() {
+        this.fields = new ArrayList<>();
+        this.methods = new ArrayList<>();
+    }
+
     /*域的解析方法*/
     abstract void parseFields(BodyDeclaration declaration);
 
@@ -37,7 +42,7 @@ public abstract class AbstractClassModel extends BaseModel {
     public abstract String generateString();
 
     /*对访问符进行排序*/
-    protected void SortFieldsAndMethods() {
+    public void SortFieldsAndMethods() {
         if (!(fields == null))
             fields.sort(Comparator.comparing(FieldModel::getVisibility, CommonUtil::visibilityOrder));
         if (!(methods == null))
@@ -51,5 +56,4 @@ public abstract class AbstractClassModel extends BaseModel {
             return "";
         return res.replace("[", "<").replace("]", ">");
     }
-
 }

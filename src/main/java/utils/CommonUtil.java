@@ -3,6 +3,7 @@ package utils;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import model.AbstractClassModel;
+import model.ClassModel;
 import model.InterfaceModel;
 
 import java.util.*;
@@ -95,5 +96,12 @@ public class CommonUtil {
             TypeSet.add(finalType);
         }
         return new ArrayList<>(TypeSet);
+    }
+
+    public static Optional<ClassModel> findTargetClass(String target, List<AbstractClassModel> class_list) {
+        return class_list.stream()
+                .filter(c -> c instanceof ClassModel && c.getName().equals(target))
+                .map(c -> (ClassModel) c)
+                .findFirst();
     }
 }

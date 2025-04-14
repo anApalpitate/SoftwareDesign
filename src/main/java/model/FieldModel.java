@@ -12,11 +12,19 @@ public class FieldModel extends BaseModel {
     private final boolean isStatic;
     private final int cnt;
 
-    FieldModel(FieldDeclaration field, String arg) {
+    public FieldModel(FieldDeclaration field, String arg) {
         super(VariableToString(field), extractVisibility(field.getModifiers(), arg));
         this.type = field.getVariable(0).getTypeAsString().replaceAll(",", ", "); //每个逗号后加空格
         this.isStatic = field.isStatic();
         this.cnt = field.getVariables().size();
+    }
+
+    public FieldModel(FieldModel other) {
+        this.name = other.name;
+        this.type = other.type;
+        this.isStatic = other.isStatic;
+        this.cnt = other.cnt;
+        this.visibility = other.visibility;
     }
 
     private static String VariableToString(FieldDeclaration field) {
@@ -35,6 +43,10 @@ public class FieldModel extends BaseModel {
     public String generateString() {
         String staticModifier = isStatic ? "{static} " : "";
         return getVisibility() + " " + staticModifier + getName() + ": " + type;
+    }
+
+    public String getType(){
+        return type;
     }
 
     public int getCnt() {

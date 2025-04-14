@@ -33,6 +33,18 @@ public class MethodModel extends BaseModel {
         parseDependencies(method);
     }
 
+    MethodModel(MethodModel other){
+        this.dependencies = new ArrayList<>(other.dependencies);
+        this.name = other.name;
+        this.visibility = other.visibility;
+        this.parameterString = other.parameterString;
+        this.isStatic = other.isStatic;
+        this.genericReturnType = other.genericReturnType;
+        this.isAbstract = other.isAbstract;
+        this.isConstructor = other.isConstructor;
+        this.returnType = other.returnType;
+    }
+
     private void parseDependencies(MethodDeclaration method) {
         //参数依赖(已在buildParam中添加到dependencies)
         Set<String> set = new HashSet<>(dependencies);
@@ -85,6 +97,14 @@ public class MethodModel extends BaseModel {
 
     public List<String> getDependencies() {
         return dependencies;
+    }
+
+    public String getReturnType(){
+        return returnType;
+    }
+
+    public String getParameterList(){
+        return parameterString;
     }
 
 }

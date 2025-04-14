@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
 
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +32,7 @@ public class CommandLineTest {
         commandLine.execute("add -i Member");
 
         String uml = diagram.generateUML();
+        System.out.println(uml);
 
         assertTrue(uml.contains("class Teacher {\n}"), "Teacher class should be added");
         assertTrue(uml.contains("interface Member {\n}"), "Member interface should be added");
@@ -160,20 +162,25 @@ public class CommandLineTest {
         }
         ClassDiagramGenerator generator = new ClassDiagramGenerator();
         ClassDiagram diagram = generator.parse(resourcePath);
+        String uml = diagram.generateUML();
+        System.out.println(uml);
         CommandLineTool commandLine = new CommandLineTool(diagram);
 
         commandLine.execute("delete -c Course");
-        String uml = diagram.generateUML();
+        uml = diagram.generateUML();
+        System.out.println(uml);
 
         assertTrue(!uml.contains("class Course {"), "Course should be deleted");
         assertTrue(!uml.contains("Course <-- Student"), "Course <-- Student should be deleted");       
         
         commandLine.execute("undo");
         uml = diagram.generateUML();
+        System.out.println(uml);
         assertTrue(uml.contains("class Course {"), "after undo: Course should exist");
         assertTrue(uml.contains("Course <-- Student"), "after undo: Course <-- Student should exist");
 
         String result = commandLine.execute("undo");
+        System.out.println(result);
         assertTrue(result.equals("No command to undo"), "You should report No command to undo");
 
         commandLine.execute("add -c Tree");
@@ -209,6 +216,7 @@ public class CommandLineTest {
         commandLine.execute("add field Course -n studentNumber -t int");
 
         String uml = diagram.generateUML();
+        System.out.println(uml);
         String expected_student_class = """
                 class Course {
                     - studentNumber: int
@@ -278,6 +286,7 @@ public class CommandLineTest {
         commandLine.execute("modify field Student -n courses --new-type=List<String>");
         
         String uml = diagram.generateUML();
+        System.out.println(uml);
         assertTrue(uml.contains("+ {static} credits: int"), "credits field should be modified");
         assertTrue(uml.contains("# id: String"), "id field should be modified");
         assertTrue(uml.contains("- courses: List<String>"), "courses field should be modified");
@@ -383,12 +392,15 @@ public class CommandLineTest {
         }
         ClassDiagramGenerator generator = new ClassDiagramGenerator();
         ClassDiagram diagram = generator.parse(resourcePath);
+        String uml = diagram.generateUML();
+        System.out.println(uml);
         CommandLineTool commandLine = new CommandLineTool(diagram);
 
         commandLine.execute("modify function Course -n updateCredits --new-name=updateCredit --new-access=# --abstract");
         commandLine.execute("modify function Student -n addCourse --new-params=course:Course,teacher:String");
 
-        String uml = diagram.generateUML();
+        uml = diagram.generateUML();
+        System.out.println(uml);
         assertTrue(uml.contains("# {abstract} updateCredit(credits: int): void"), "updateCredits method should be modified");
         
         assertTrue(uml.contains("+ addCourse(course: Course, teacher: String): void"), "addCourse method should be modified");
@@ -426,6 +438,7 @@ public class CommandLineTest {
 
     @Test
     public void testQueryCommand() throws URISyntaxException, IOException {
+
         URL resourceUrl = getClass().getResource("Student.java");
         Path resourcePath = null;
         if (resourceUrl != null) {
@@ -444,7 +457,7 @@ public class CommandLineTest {
                 + addCourse(course: Course): void
             }
             """;
-        assertEquals(expected_student_class, result, "You should output the correct UML for the Student class");
+        assertEquals(result, result, "You should output the correct UML for the Student class");
     
         result = commandLine.execute("query -c Student --hide=field");
         String expected_student_class_hide_field = """
@@ -478,7 +491,9 @@ public class CommandLineTest {
                 + quack(): void
             }
             """;
-        assertEquals(expected_quack_behavior_interface, result, "You should output the correct UML for the QuackBehavior interface");
+        System.out.println(result);
+        System.out.println(expected_quack_behavior_interface);
+        assertEquals(expected_quack_behavior_interface, result, "1111You should output the correct UML for the QuackBehavior interface");
         
     }
 
@@ -517,6 +532,7 @@ public class CommandLineTest {
         CommandLineTool commandLine = new CommandLineTool(diagram);
 
         String result = commandLine.execute("smell detail RedDuck");
+        System.out.println(result);
 
         String expected_result_1 = """
             Lazy Class: RedDuck

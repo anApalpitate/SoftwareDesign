@@ -7,7 +7,9 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import graph.Graph;
 import utils.CommonUtil;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class InterfaceModel extends AbstractClassModel {
@@ -26,6 +28,23 @@ public class InterfaceModel extends AbstractClassModel {
         addDependencies();
     }
 
+    // 拷贝构造函数
+    public InterfaceModel(InterfaceModel other) {
+        super();  // 调用父类的拷贝构造函数
+        this.GenericType = other.GenericType;  // 复制泛型类型
+
+        // 复制方法列表
+        this.methods = new ArrayList<>();
+        for (MethodModel method : other.methods) {
+            this.methods.add(new MethodModel(method));  // 复制每个方法
+        }
+
+        // 复制依赖类
+        this.DependedClasses = new HashSet<>(other.DependedClasses);  // 复制依赖关系
+        this.name = other.name;
+        this.visibility = other.visibility;
+    }
+
     void parseFields(BodyDeclaration declaration) {
     }
 
@@ -39,6 +58,14 @@ public class InterfaceModel extends AbstractClassModel {
                 DependedClasses.addAll(methodModel.getDependencies());
             }
         }
+    }
+
+    public String getGenericType(){
+        return GenericType;
+    }
+
+    public List<MethodModel> getMethods(){
+        return methods;
     }
 
     private void findInheritances(ClassOrInterfaceDeclaration decl) {

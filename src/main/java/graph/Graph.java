@@ -8,12 +8,33 @@ public class Graph {
     static private ClassMap associationMap;
     static private ClassMap dependencyMap;
 
+    private ClassMap saveinheritanceMap;
+    private ClassMap saveimplementationMap;
+    private ClassMap saveassociationMap;
+    private ClassMap savedependencyMap;
+
     public Graph() {
         inheritanceMap = new ClassMap();
         implementationMap = new ClassMap();
         associationMap = new ClassMap();
         dependencyMap = new ClassMap();
     }
+
+    public Graph(Graph other) {
+        // 使用 ClassMap 的复制构造函数进行深拷贝
+        saveinheritanceMap = new ClassMap(other.inheritanceMap);
+        saveimplementationMap = new ClassMap(other.implementationMap);
+        saveassociationMap = new ClassMap(other.associationMap);
+        savedependencyMap = new ClassMap(other.dependencyMap);
+    }
+
+    public void loadGraph(){
+        inheritanceMap = saveinheritanceMap;
+        implementationMap = saveimplementationMap;
+        associationMap = saveassociationMap;
+        dependencyMap = savedependencyMap;
+    }
+
     //API如有需要，请继续补充：
 
     public static void addInheritance(String className, String relatedClassName) {
@@ -72,10 +93,19 @@ public class Graph {
     }
 
     public ClassMap getMergedMap() {
-        return inheritanceMap
+        ClassMap map = new ClassMap();
+        return map.MergeWith(inheritanceMap)
                 .MergeWith(implementationMap)
                 .MergeWith(associationMap)
                 .MergeWith(dependencyMap);
     }
-    
+
+    public void deleteAll(String className) {
+        inheritanceMap.remove(className);
+        implementationMap.remove(className);
+        associationMap.remove(className);
+        dependencyMap.remove(className);
+    }
+
+
 }

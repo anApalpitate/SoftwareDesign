@@ -8,8 +8,12 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import graph.Graph;
 import utils.CommonUtil;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 public class ClassModel extends AbstractClassModel {
     private final boolean isAbstract;
@@ -35,7 +39,35 @@ public class ClassModel extends AbstractClassModel {
         addInheritancesAndImplementations(decl);
         addAssociations();
         addDependencies();
+    }
 
+    // 拷贝构造函数
+    public ClassModel(ClassModel other) {
+        super();  // 调用父类的无参构造函数，初始化fields和methods
+
+        this.name = other.name;  // 复制name字段
+        this.visibility = other.visibility;  // 复制可见性字段
+        this.isAbstract = other.isAbstract;  // 复制是否是抽象类
+        this.GenericType = other.GenericType; // 复制泛型类型
+
+        // 深拷贝集合类型字段
+        this.AssociatedClasses = new HashSet<>(other.AssociatedClasses);  // 深拷贝AssociatedClasses集合
+        this.DependedClasses = new HashSet<>(other.DependedClasses);    // 深拷贝DependedClasses集合
+
+        // 深拷贝fields列表
+        this.fields = new ArrayList<>();
+        for (FieldModel field : other.fields) {
+            this.fields.add(new FieldModel(field));
+        }
+
+        // 深拷贝methods列表
+        this.methods = new ArrayList<>();
+        for (MethodModel method : other.methods) {
+            this.methods.add(new MethodModel(method));
+        }
+
+        this.methodCnt = other.methodCnt;
+        this.fieldCnt = other.fieldCnt;
     }
 
     void parseFields(BodyDeclaration declaration) {
@@ -122,5 +154,62 @@ public class ClassModel extends AbstractClassModel {
                 return false;
         }
         return true;
+    }
+
+    public void addField(FieldDeclaration field) {
+        FieldModel fieldModel = new FieldModel(field, "");
+        fields.add(fieldModel);  // 添加到字段列表
+        //AssociatedClasses.addAll(fieldModel.getAssociations());  // 更新关联类信息
+        fieldCnt += fieldModel.getCnt();  // 更新字段数量计数
+    }
+
+    public void addMethod(MethodDeclaration methodDecl) {
+        MethodModel methodModel = new MethodModel(methodDecl, this.getName());
+        methods.add(methodModel);
+        methodCnt += 1;
+    }
+
+    public boolean getIsAbstract(){
+        return  isAbstract;
+    }
+
+    public String getGenericType(){
+        return GenericType;
+    }
+
+    public List<FieldModel> getFields(){
+        return fields;
+    }
+
+    public List<MethodModel> getMethods(){
+        return methods;
+    }
+
+    public void deleteField(String fieldName) {
+        List<FieldModel> toRemove = new ArrayList<>();
+
+        for (FieldModel field : fields) {
+            String[] names = field.getName().split(",");
+            for (String name : names) {
+                if (name.trim().equals(fieldName)) {
+                    toRemove.add(field);
+                    break;
+                }
+            }
+        }
+        fieldCnt -= 1;
+        fields.removeAll(toRemove);
+    }
+
+    public void deleteMethod(String functionName) {
+        List<MethodModel> toRemove = new ArrayList<>();
+
+        for (MethodModel method : methods) {
+            if (method.getName().equals(functionName)) {
+                toRemove.add(method);
+            }
+        }
+        methodCnt -= 1;
+        methods.removeAll(toRemove);
     }
 }

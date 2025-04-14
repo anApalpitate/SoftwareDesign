@@ -4,6 +4,7 @@ import com.github.javaparser.ast.body.*;
 import graph.Graph;
 import utils.CommonUtil;
 
+import java.lang.invoke.StringConcatFactory;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,36 @@ public class EnumModel extends AbstractClassModel {
 
         addAssociations();
         addDependencies();
+    }
+
+    // 拷贝构造函数
+    public EnumModel(EnumModel other) {
+        super();  // 调用父类的拷贝构造函数，初始化父类字段
+
+        // 复制常量列表
+        this.constants = new ArrayList<>(other.constants);
+
+        // 深拷贝关联类和依赖类集合
+        this.AssociatedClasses = new HashSet<>(other.AssociatedClasses);
+        this.DependedClasses = new HashSet<>(other.DependedClasses);
+
+        // 深拷贝字段列表
+        this.fields = new ArrayList<>();
+        for (FieldModel field : other.fields) {
+            this.fields.add(new FieldModel(field));  // 使用FieldModel的拷贝构造函数
+        }
+
+        // 深拷贝方法列表
+        this.methods = new ArrayList<>();
+        for (MethodModel method : other.methods) {
+            this.methods.add(new MethodModel(method));  // 使用MethodModel的拷贝构造函数
+        }
+
+        // 调用addAssociations和addDependencies方法，保证复制后的对象也添加了相应的关联和依赖
+        addAssociations();
+        addDependencies();
+        this.name = other.name;
+        this.visibility = other.visibility;
     }
 
     /*解析枚举类的常数部分*/
@@ -59,6 +90,18 @@ public class EnumModel extends AbstractClassModel {
                 DependedClasses.addAll(methodModel.getDependencies());
             }
         }
+    }
+
+    public List<String> getConstants(){
+        return constants;
+    }
+
+    public List<FieldModel> getFields(){
+        return fields;
+    }
+
+    public List<MethodModel> getMethods(){
+        return methods;
     }
 
     private void addAssociations() {

@@ -7,17 +7,26 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import graph.Graph;
 import model.AbstractClassModel;
+import model.ClassModel;
+import model.EnumModel;
+import model.InterfaceModel;
 import utils.CommonUtil;
 import utils.Factory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 public class ClassParser {
-    private final Graph graph;
-    private List<AbstractClassModel> class_list;
+    protected Graph graph;
+    protected List<AbstractClassModel> class_list;
+
+    // 用于保存历史记录
+    private final Deque<List<AbstractClassModel>> classHistory = new ArrayDeque<>();
+    private final Deque<Graph> graphHistory = new ArrayDeque<>();
 
     ClassParser(File file) throws IOException {
         this.graph = new Graph();
@@ -58,5 +67,30 @@ public class ClassParser {
         return analyzer.generateOutput();
     }
 
+    public void saveSnapshot() {
+        List<AbstractClassModel> classListCopy = new ArrayList<>();
+        for (AbstractClassModel model : class_list) {
+            if (model instanceof ClassModel) {
+                classListCopy.add(new ClassModel((ClassModel) model));
+            } else if (model instanceof InterfaceModel) {
+                classListCopy.add(new InterfaceModel((InterfaceModel) model));
+            } else if (model instanceof EnumModel) {
+                classListCopy.add(new EnumModel((EnumModel) model));
+            }
+        }
 
+        Graph graphCopy = new Graph(graph);
+        classHistory.push(classListCopy);
+        graphHistory.push(graphCopy);
+    }
+
+    public boolean undo() {
+        if (classHistory.isEmpty() || graphHistory.isEmpty()) {
+            return false;
+        }
+        class_list = classHistory.pop();
+        graph = graphHistory.pop();
+        graph.loadGraph();
+        return true;
+    }
 }
