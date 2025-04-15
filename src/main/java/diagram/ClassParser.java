@@ -1,10 +1,19 @@
 package diagram;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
+
 import graph.Graph;
 import model.AbstractClassModel;
 import model.ClassModel;
@@ -12,13 +21,6 @@ import model.EnumModel;
 import model.InterfaceModel;
 import utils.CommonUtil;
 import utils.Factory;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
 
 public class ClassParser {
     protected Graph graph;
@@ -28,13 +30,26 @@ public class ClassParser {
     private final Deque<List<AbstractClassModel>> classHistory = new ArrayDeque<>();
     private final Deque<Graph> graphHistory = new ArrayDeque<>();
 
+    // 支持单个文件的构造函数
     ClassParser(File file) throws IOException {
         this.graph = new Graph();
+        this.class_list = new ArrayList<>();
         classListInit(file);
     }
 
-    private void classListInit(File file) throws IOException {
+    // 支持多个文件的构造函数
+    ClassParser(List<Path> paths) throws IOException {
+        this.graph = new Graph();
         this.class_list = new ArrayList<>();
+        for (Path path : paths) {
+            File file = path.toFile();
+            classListInit(file);
+        }
+        CommonUtil.sortClassList(class_list);
+    }
+
+    private void classListInit(File file) throws IOException {
+        // this.class_list = new ArrayList<>();
         CompilationUnit root = StaticJavaParser.parse(file);
         for (BodyDeclaration decl : root.findAll(BodyDeclaration.class)) {
             if (decl instanceof ClassOrInterfaceDeclaration || decl instanceof EnumDeclaration) {

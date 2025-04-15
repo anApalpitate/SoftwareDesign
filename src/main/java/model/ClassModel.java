@@ -1,19 +1,19 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+
 import graph.Graph;
 import utils.CommonUtil;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.List;
 
 public class ClassModel extends AbstractClassModel {
     private final boolean isAbstract;
@@ -85,11 +85,26 @@ public class ClassModel extends AbstractClassModel {
     void parseMethods(BodyDeclaration declaration) {
         DependedClasses = new HashSet<>();
         if (declaration instanceof ClassOrInterfaceDeclaration classDecl) {
-            for (MethodDeclaration method : classDecl.getMethods()) {
-                MethodModel methodModel = new MethodModel(method, "");
-                methods.add(methodModel);
-                DependedClasses.addAll(methodModel.getDependencies());
-                methodCnt += (methodModel.isConstructor() ? 0 : 1);
+            // for (MethodDeclaration method : classDecl.getMethods()) {
+            //     MethodModel methodModel = new MethodModel(method, "");
+            //     // System.out.println(classDecl.getMethods().toString());
+            //     methods.add(methodModel);
+            //     DependedClasses.addAll(methodModel.getDependencies());
+            //     methodCnt += (methodModel.isConstructor() ? 0 : 1);
+            // }
+            for (BodyDeclaration member : classDecl.getMembers()) {
+                if (member instanceof MethodDeclaration method) {
+                    MethodModel methodModel = new MethodModel(method, "");
+                    methods.add(methodModel);
+                    DependedClasses.addAll(methodModel.getDependencies());
+                    methodCnt += (methodModel.isConstructor() ? 0 : 1);
+                } else if (member instanceof ConstructorDeclaration constructor) {
+                    // 处理构造函数
+                    MethodModel methodModel = new MethodModel(constructor, "");
+                    methods.add(methodModel);
+                    DependedClasses.addAll(methodModel.getDependencies());
+                    // 构造函数这里 methodCnt 不增加，因为之前的逻辑构造函数不计数
+                }
             }
         }
     }
@@ -132,7 +147,11 @@ public class ClassModel extends AbstractClassModel {
         for (FieldModel field : fields)
             sb.append(blank).append(field.generateString()).append("\n");
         for (MethodModel method : methods)
-            sb.append(blank).append(method.generateString()).append("\n");
+            // 构造函数不打印
+            if (!method.isConstructor()){
+                sb.append(blank).append(method.generateString()).append("\n");
+            }
+            // sb.append(blank).append(method.generateString()).append("\n");
 
         sb.append("}\n");
         return sb.toString();
@@ -149,7 +168,10 @@ public class ClassModel extends AbstractClassModel {
     public boolean isDataClass() {
         if (isGodClass() || isLazyClass())
             return false;
+        // boolean isDataclass = false;
         for (MethodModel method : methods) {
+            if(method.isConstructor())
+                continue;
             if (!method.getName().startsWith("get") && !method.getName().startsWith("set"))
                 return false;
         }

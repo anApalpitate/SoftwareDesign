@@ -70,6 +70,7 @@ public class Graph {
 
     public HashSet<String> getImplementation(String src) {
         /*获取当前类的实现类集合 */
+        // 获取当前具体类的父类集合
         return implementationMap.get(src);
     }
 
@@ -93,8 +94,9 @@ public class Graph {
     }
 
     public ClassMap getMergedMap() {
-        ClassMap map = new ClassMap();
-        return map.MergeWith(inheritanceMap)
+    
+        ClassMap res = new ClassMap();
+        return res.MergeWith(inheritanceMap)
                 .MergeWith(implementationMap)
                 .MergeWith(associationMap)
                 .MergeWith(dependencyMap);

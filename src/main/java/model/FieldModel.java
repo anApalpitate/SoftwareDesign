@@ -1,10 +1,10 @@
 package model;
 
-import com.github.javaparser.ast.body.FieldDeclaration;
-import utils.CommonUtil;
-
 import java.util.List;
 
+import com.github.javaparser.ast.body.FieldDeclaration;
+
+import utils.CommonUtil;
 import static utils.CommonUtil.extractVisibility;
 
 public class FieldModel extends BaseModel {
@@ -52,4 +52,10 @@ public class FieldModel extends BaseModel {
     public int getCnt() {
         return cnt;
     }
+    
+    // 添加 isStatic() 方法
+    public boolean isStatic() {
+        return isStatic;
+    }
+
 }
