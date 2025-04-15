@@ -1,33 +1,5 @@
 package diagram;
 
-// import java.io.File;
-// import java.nio.file.Path;
-// import java.util.List;
-
-// public class ClassDiagram {
-//     private ClassParser classParser;
-
-//     ClassDiagram(Path path) {
-//         File file = path.toFile();
-//         try {
-//             this.classParser = new ClassParser(file);
-//         } catch (Exception e) {
-//             e.printStackTrace();
-//             System.exit(1);
-//         }
-//     }
-
-//     public String generateUML() {
-//         return classParser.generateUML();
-//     }
-    
-//     public List<String> getCodeSmells() {
-//         return classParser.getCodeSmells();
-//     }
-
-// }
-
-// pzj-0413-part3
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -43,9 +15,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import command.ClassOp;
 import command.FieldOp;
 import command.FunctionOp;
-import command.ClassOp;
 import command.Query;
 
 public class ClassDiagram {
@@ -189,7 +161,6 @@ public class ClassDiagram {
             }
         }
         return filteredSmells;
-        // return allSmells;
     }
 
     public void loadConfig(String configFile) {

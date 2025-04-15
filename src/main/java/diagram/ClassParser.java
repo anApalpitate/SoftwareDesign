@@ -49,7 +49,6 @@ public class ClassParser {
     }
 
     private void classListInit(File file) throws IOException {
-        // this.class_list = new ArrayList<>();
         CompilationUnit root = StaticJavaParser.parse(file);
         for (BodyDeclaration decl : root.findAll(BodyDeclaration.class)) {
             if (decl instanceof ClassOrInterfaceDeclaration || decl instanceof EnumDeclaration) {

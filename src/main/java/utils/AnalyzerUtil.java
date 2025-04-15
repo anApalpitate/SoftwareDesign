@@ -74,22 +74,6 @@ public class AnalyzerUtil {
         return subList;
     }
 
-    // public String formatCycleOutput(List<String> path) {
-    //     // path: [..., X, ..., Y, Z, X]
-    //     // 该函数中将path并格式化为 Circular Dependency: <A类名> <.. <B类名> <.. <C类名> <.. ... <.. <A类名>
-    //     StringBuilder sb = new StringBuilder("Circular Dependency: ");
-    //     int n = path.size();
-    //     int startIdx = path.get(0).equals("X") ? 1 : 0; //起始位置可以自行更改
-    //     sb.append(path.get(startIdx));
-    //     for (int i = 0; i < n; i++) {
-    //         sb.append(" <.. ");
-    //         //沿path向前
-    //         startIdx = (startIdx + n - 1) % n;
-    //         sb.append(path.get(startIdx));
-    //     }
-    //     return sb.toString();
-    // }
-
     public String formatCycleOutput(List<String> path) {
         // path: [X, ..., Y, Z, X]
         // 该函数中将path并格式化为 Circular Dependency: <A类名> <.. <B类名> <.. <C类名> <.. ... <.. <A类名>

@@ -85,13 +85,6 @@ public class ClassModel extends AbstractClassModel {
     void parseMethods(BodyDeclaration declaration) {
         DependedClasses = new HashSet<>();
         if (declaration instanceof ClassOrInterfaceDeclaration classDecl) {
-            // for (MethodDeclaration method : classDecl.getMethods()) {
-            //     MethodModel methodModel = new MethodModel(method, "");
-            //     // System.out.println(classDecl.getMethods().toString());
-            //     methods.add(methodModel);
-            //     DependedClasses.addAll(methodModel.getDependencies());
-            //     methodCnt += (methodModel.isConstructor() ? 0 : 1);
-            // }
             for (BodyDeclaration member : classDecl.getMembers()) {
                 if (member instanceof MethodDeclaration method) {
                     MethodModel methodModel = new MethodModel(method, "");
@@ -151,8 +144,6 @@ public class ClassModel extends AbstractClassModel {
             if (!method.isConstructor()){
                 sb.append(blank).append(method.generateString()).append("\n");
             }
-            // sb.append(blank).append(method.generateString()).append("\n");
-
         sb.append("}\n");
         return sb.toString();
     }
@@ -168,7 +159,6 @@ public class ClassModel extends AbstractClassModel {
     public boolean isDataClass() {
         if (isGodClass() || isLazyClass())
             return false;
-        // boolean isDataclass = false;
         for (MethodModel method : methods) {
             if(method.isConstructor())
                 continue;
