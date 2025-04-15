@@ -131,6 +131,9 @@ public abstract class AbstractClassModel extends BaseModel {
 
     // 添加 getMethods() 方法
     public List<MethodModel> getMethods() {
+        // for(MethodModel method : methods){
+        //     System.out.println(method.getName());
+        // }
         return methods;
     }
 }

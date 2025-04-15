@@ -93,7 +93,10 @@
 package diagram;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import graph.ClassMap;
 import graph.Graph;
@@ -102,8 +105,6 @@ import model.ClassModel;
 import model.FieldModel;
 import model.MethodModel;
 import utils.AnalyzerUtil;
-
-import java.util.*;
 
 public class SmellAnalyzer {
     private final Graph graph;
@@ -178,7 +179,12 @@ public class SmellAnalyzer {
         ClassMap newGraph = graph.getMergedMap();
         LinkedList<String> path = new LinkedList<>();
         for (AbstractClassModel model : classModels) {
+            // 遍历每个类
+            // 传入：类名x，综合图，新的HashSet1，新的HashSet2，路径
             if (util.IsCycleByDFS(model.getName(), newGraph, new HashSet<>(), new HashSet<>(), path)) {
+                // output.add(path.toString());
+                path = util.extractTrailingSequence(path);
+                // output.add(path.toString());
                 output.add(util.formatCycleOutput(path));
                 return;
             }
@@ -187,10 +193,10 @@ public class SmellAnalyzer {
 
 
     private void detectSingletonPattern() {
-        output.add("Singleton Pattern Detection:");
+        // output.add("Singleton Pattern Detection:");
         for (AbstractClassModel model : classModels) {
             if (model instanceof ClassModel classModel) {
-                output.add("now class: " + classModel.getName());
+                // output.add("now class: " + classModel.getName());
                 if (isSingleton(classModel)) {
                     output.add("Possible Design Patterns: Singleton Pattern");
                 }
@@ -200,20 +206,25 @@ public class SmellAnalyzer {
 
     private boolean isSingleton(ClassModel classModel) {
         // 不存在子类继承自类A
-        output.add("0:"+graph.getInheritance(classModel.getName()).toString());
+        // output.add("0:"+graph.getInheritance(classModel.getName()).toString());
         if (!graph.getReverseInheritance(classModel.getName()).isEmpty()) {
-            output.add("1: not a singleton class" + classModel.getName());
-            output.add("111:"+graph.getInheritance(classModel.getName()).toString());
+            // output.add("1: not a singleton class" + classModel.getName());
+            // output.add("111:"+graph.getReverseInheritance(classModel.getName()).toString());
             return false;
         }
         // 没有公共（public）构造函数且存在私有构造函数
         boolean hasPublicConstructor = false;
         boolean hasPrivateConstructor = false;
         for (MethodModel method : classModel.getMethods()) {
+            // output.add(method.getName());
+            // output.add("aaa");
             if (method.isConstructor()) {
-                if ("public".equals(method.getVisibility())) {
+                // output.add("kkk");
+                // output.add(method.getVisibility());
+                if ("+".equals(method.getVisibility())) {
+                    // output.add("hasPublicConstructor is true in class:" + classModel.getName());
                     hasPublicConstructor = true;
-                } else if ("private".equals(method.getVisibility())) {
+                } else if ("-".equals(method.getVisibility())) {
                     hasPrivateConstructor = true;
                 }
             }
@@ -225,7 +236,7 @@ public class SmellAnalyzer {
         // 包含静态私有字段，类型为自身类
         boolean hasStaticPrivateField = false;
         for (FieldModel field : classModel.getFields()) {
-            if (field.isStatic() && "private".equals(field.getVisibility()) && field.getType().equals(classModel.getName())) {
+            if (field.isStatic() && "-".equals(field.getVisibility()) && field.getType().equals(classModel.getName())) {
                 hasStaticPrivateField = true;
                 break;
             }
@@ -237,7 +248,7 @@ public class SmellAnalyzer {
         // 提供静态公有方法获取实例
         boolean hasStaticPublicMethod = false;
         for (MethodModel method : classModel.getMethods()) {
-            if (method.isStatic() && "public".equals(method.getVisibility()) && method.getReturnType().equals(classModel.getName())) {
+            if (method.isStatic() && "+".equals(method.getVisibility()) && method.getReturnType().equals(classModel.getName())) {
                 hasStaticPublicMethod = true;
                 break;
             }
@@ -255,18 +266,27 @@ public class SmellAnalyzer {
                 strategyInterfaces.add(model);
             }
         }
+        // if(strategyInterfaces.size() == 0) {
+        //     System.out.println("No Strategy Pattern found.");
+        // }
         // 检查每个策略接口是否满足策略模式的条件
         for (AbstractClassModel strategyInterface : strategyInterfaces) {
+            // 检查实现类大于等于2
             List<AbstractClassModel> concreteStrategies = new ArrayList<>();
             for (AbstractClassModel model : classModels) {
+                // System.out.println("dad:"+ graph.getInheritance(model.getName()).size());
                 if (model instanceof ClassModel && graph.getInheritance(model.getName()).contains(strategyInterface.getName())) {
+                    concreteStrategies.add(model);
+                }
+                else if ( model instanceof ClassModel && graph.getImplementation(model.getName()).contains(strategyInterface.getName())) {
                     concreteStrategies.add(model);
                 }
             }
             if (concreteStrategies.size() >= 2) {
                 // 检查是否存在上下文类
+                // System.out.println("1222" + strategyInterface.getName().toString());
                 for (AbstractClassModel model : classModels) {
-                    if (graph.getRelations(model.getName()).contains(strategyInterface.getName())) {
+                    if (model instanceof ClassModel && graph.getAssociation(model.getName()).contains(strategyInterface.getName())) {
                         output.add("Possible Design Patterns: Strategy Pattern");
                         return;
                     }

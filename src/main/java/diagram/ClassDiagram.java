@@ -87,21 +87,21 @@ public class ClassDiagram {
         analyzerPatterns.put("CircularDependencyAnalyzer", List.of("Circular Dependency:"));
         analyzerPatterns.put("DesignPatternAnalyzer", List.of("Possible Design Patterns: Singleton Pattern", "Possible Design Patterns: Strategy Pattern"));
 
-        // for (String smell : allSmells) {
-        //     for (String analyzer : enabledAnalyzers) {
-        //         List<String> patterns = analyzerPatterns.get(analyzer);
-        //         if (patterns != null) {
-        //             for (String pattern : patterns) {
-        //                 if (smell.contains(pattern)) {
-        //                     filteredSmells.add(smell);
-        //                     break;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        // return filteredSmells;
-        return allSmells;
+        for (String smell : allSmells) {
+            for (String analyzer : enabledAnalyzers) {
+                List<String> patterns = analyzerPatterns.get(analyzer);
+                if (patterns != null) {
+                    for (String pattern : patterns) {
+                        if (smell.contains(pattern)) {
+                            filteredSmells.add(smell);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return filteredSmells;
+        // return allSmells;
     }
 
     public void loadConfig(String configFile) {
