@@ -1,0 +1,367 @@
+E:\.jdks\corretto-17.0\bin\java.exe "-javaagent:E:\IntelliJ IDEA Community Edition 2024.3.3\lib\idea_rt.jar=54446" -Dfile.encoding=UTF-8 -classpath "D:\桌面\软件系统设计\lab\software_group_31\target\classes;C:\Users\hongbo Pang\.m2\repository\com\github\javaparser\javaparser-core\3.25.8\javaparser-core-3.25.8.jar;C:\Users\hongbo Pang\.m2\repository\com\github\javaparser\javaparser-symbol-solver-core\3.25.8\javaparser-symbol-solver-core-3.25.8.jar;C:\Users\hongbo Pang\.m2\repository\org\javassist\javassist\3.30.2-GA\javassist-3.30.2-GA.jar;C:\Users\hongbo Pang\.m2\repository\com\google\guava\guava\33.0.0-jre\guava-33.0.0-jre.jar;C:\Users\hongbo Pang\.m2\repository\com\google\guava\failureaccess\1.0.2\failureaccess-1.0.2.jar;C:\Users\hongbo Pang\.m2\repository\com\google\guava\listenablefuture\9999.0-empty-to-avoid-conflict-with-guava\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar;C:\Users\hongbo Pang\.m2\repository\com\google\code\findbugs\jsr305\3.0.2\jsr305-3.0.2.jar;C:\Users\hongbo Pang\.m2\repository\org\checkerframework\checker-qual\3.41.0\checker-qual-3.41.0.jar;C:\Users\hongbo Pang\.m2\repository\com\google\errorprone\error_prone_annotations\2.23.0\error_prone_annotations-2.23.0.jar;C:\Users\hongbo Pang\.m2\repository\com\google\j2objc\j2objc-annotations\2.8\j2objc-annotations-2.8.jar" Main
+@startuml
+class ClassOp {
+    + {static} addClass(name: String, isAbstract: boolean, class_list: List<AbstractClassModel>): void
+    + {static} addInterface(name: String, class_list: List<AbstractClassModel>): void
+    + {static} addEnum(name: String, ValueList: String, class_list: List<AbstractClassModel>): void
+    + {static} deleteClassInterfaceEnum(name: String, class_list: List<AbstractClassModel>, graph: Graph): void
+    + {static} deleteInterface(name: String, class_list: List<AbstractClassModel>, graph: Graph): void
+    + {static} deleteEnum(name: String, class_list: List<AbstractClassModel>, graph: Graph): void
+}
+class CommandLineTool {
+    - diagram: ClassDiagram
+    - getArg(parts: String[], key: String): String
+    - getArg(parts: String[], key: String, skip: int): String
+    - getOptionalArg(parts: String[], key: String, defaultValue: String): String
+    + execute(command: String): String
+}
+class FieldOp {
+    + {static} addField(target: String, fieldName: String, type: String, access: String, isStatic: boolean, class_list: List<AbstractClassModel>): void
+    + {static} deleteField(target: String, fieldName: String, class_list: List<AbstractClassModel>): void
+    + {static} modifyField(target: String, fieldName: String, newName: String, newType: String, newAccess: String, isStatic: Boolean, class_list: List<AbstractClassModel>): void
+}
+class FunctionOp {
+    + {static} addFunction(target: String, functionName: String, returnType: String, params: String, access: String, isStatic: boolean, isAbstract: boolean, class_list: List<AbstractClassModel>): void
+    + {static} deleteFunction(target: String, functionName: String, class_list: List<AbstractClassModel>): void
+    + {static} modifyFunction(target: String, functionName: String, newName: String, newParams: String, newReturn: String, newAccess: String, isStatic: Boolean, isAbstract: Boolean, class_list: List<AbstractClassModel>): void
+}
+class Query {
+    + {static} queryClass(name: String, hide: String, class_list: List<AbstractClassModel>): String
+    + {static} queryInterface(name: String, hide: String, class_list: List<AbstractClassModel>): String
+    + {static} queryEnum(name: String, hide: String, class_list: List<AbstractClassModel>): String
+    + {static} relate(elementA: String, elementB: String, graph: Graph): String
+    + {static} smellDetail(elementName: String, classParser: ClassParser): String
+}
+class ClassDiagram {
+    - classParser: ClassParser
+    - enabledAnalyzers: List<String>
+    + addClass(name: String, isAbstract: boolean): void
+    + addInterface(name: String): void
+    + addEnum(name: String, ValueList: String): void
+    + deleteClassInterfaceEnum(name: String): void
+    + addField(target: String, fieldName: String, type: String, access: String, isStatic: boolean): void
+    + addFunction(target: String, functionName: String, returnType: String, params: String, access: String, isStatic: boolean, isAbstract: boolean): void
+    + deleteField(target: String, fieldName: String): void
+    + deleteFunction(target: String, functionName: String): void
+    + modifyField(target: String, fieldName: String, newName: String, newType: String, newAccess: String, isStatic: boolean): void
+    + modifyFunction(target: String, functionName: String, newName: String, newParams: String, newReturn: String, newAccess: String, isStatic: boolean, isAbstract: boolean): void
+    + undo(): String
+    + queryClass(name: String, hide: String): String
+    + queryInterface(name: String, hide: String): String
+    + queryEnum(name: String, hide: String): String
+    + relate(elementA: String, elementB: String): String
+    + smellDetail(elementName: String): String
+    + generateUML(): String
+    + getCodeSmells(): List<String>
+    + loadConfig(configFile: String): void
+}
+class ClassDiagramGenerator {
+    - collectJavaFiles(directory: Path, javaFiles: List<Path>): void
+    - createClassDiagramFromFiles(javaFiles: List<Path>): ClassDiagram
+    + parse(sourcePath: Path): ClassDiagram
+}
+class ClassParser {
+    - classHistory: Deque<List<AbstractClassModel>>
+    - graphHistory: Deque<Graph>
+    # graph: Graph
+    # class_list: List<AbstractClassModel>
+    - classListInit(file: File): void
+    + generateUML(): String
+    + getCodeSmells(): List<String>
+    + saveSnapshot(): void
+    + undo(): boolean
+}
+class SmellAnalyzer {
+    - graph: Graph
+    - classModels: List<AbstractClassModel>
+    - output: List<String>
+    - util: AnalyzerUtil
+    - ClassAnalyze(): void
+    - detectSingletonPattern(): void
+    - isSingleton(classModel: ClassModel): boolean
+    - detectStrategyPattern(): void
+    ~ InheritanceTreeAnalyze(): void
+    ~ CircularDependencyAnalyze(): void
+    + generateOutput(): List<String>
+}
+class ClassMap {
+    - map: HashMap<String, HashSet<String>>
+    + hasRelation(src: String, dst: String): boolean
+    + add(src: String, dst: String): void
+    + addAll(src: String, dsts: HashSet<String>): void
+    + get(className: String): HashSet<String>
+    + getReverse(className: String): HashSet<String>
+    + generateString(connectionSymbol: String): String
+    + generateStringWithFilter(connectionSymbol: String, filterMap: ClassMap): String
+    + getKeys(): List<String>
+    + MergeWith(other: ClassMap): ClassMap
+    + remove(className: String): void
+}
+class Graph {
+    - {static} inheritanceMap: ClassMap
+    - {static} implementationMap: ClassMap
+    - {static} associationMap: ClassMap
+    - {static} dependencyMap: ClassMap
+    - saveinheritanceMap: ClassMap
+    - saveimplementationMap: ClassMap
+    - saveassociationMap: ClassMap
+    - savedependencyMap: ClassMap
+    + loadGraph(): void
+    + {static} addInheritance(className: String, relatedClassName: String): void
+    + {static} addImplementation(className: String, relatedClassName: String): void
+    + {static} addAssociation(className: String, relatedClassName: String): void
+    + {static} addDependency(className: String, relatedClassName: String): void
+    + getInheritance(src: String): HashSet<String>
+    + getReverseInheritance(src: String): HashSet<String>
+    + getImplementation(src: String): HashSet<String>
+    + getAssociation(src: String): HashSet<String>
+    + getDependency(src: String): HashSet<String>
+    + generateString(): String
+    + getMergedMap(): ClassMap
+    + deleteAll(className: String): void
+}
+class JClassDiagram {
+    + {static} main(args: String[]): void
+}
+class Main {
+    + {static} main(args: String[]): void
+}
+abstract class AbstractClassModel {
+    - isInterface: boolean
+    - isAbstract: boolean
+    ~ fields: List<FieldModel>
+    ~ methods: List<MethodModel>
+    # extractGenericTypes(decl: ClassOrInterfaceDeclaration): String
+    ~ {abstract} parseFields(declaration: BodyDeclaration): void
+    ~ {abstract} parseMethods(declaration: BodyDeclaration): void
+    + {abstract} generateString(): String
+    + SortFieldsAndMethods(): void
+    + isInterface(): boolean
+    + isAbstract(): boolean
+    + getMethods(): List<MethodModel>
+}
+abstract class BaseModel {
+    # name: String
+    # visibility: String
+    + initialize(name: String, visibility: String): void
+    + getName(): String
+    + getVisibility(): String
+}
+class ClassModel {
+    - isAbstract: boolean
+    - fieldCnt: int
+    - methodCnt: int
+    ~ GenericType: String
+    ~ AssociatedClasses: Set<String>
+    ~ DependedClasses: Set<String>
+    - addInheritancesAndImplementations(decl: ClassOrInterfaceDeclaration): void
+    - addAssociations(): void
+    - addDependencies(): void
+    ~ parseFields(declaration: BodyDeclaration): void
+    ~ parseMethods(declaration: BodyDeclaration): void
+    + generateString(): String
+    + isGodClass(): boolean
+    + isLazyClass(): boolean
+    + isDataClass(): boolean
+    + addField(field: FieldDeclaration): void
+    + addMethod(methodDecl: MethodDeclaration): void
+    + getIsAbstract(): boolean
+    + getGenericType(): String
+    + getFields(): List<FieldModel>
+    + getMethods(): List<MethodModel>
+    + deleteField(fieldName: String): void
+    + deleteMethod(functionName: String): void
+}
+class EnumModel {
+    - constants: List<String>
+    - AssociatedClasses: Set<String>
+    - DependedClasses: Set<String>
+    - parseConstants(declaration: EnumDeclaration): void
+    - addAssociations(): void
+    - addDependencies(): void
+    ~ parseFields(declaration: BodyDeclaration): void
+    ~ parseMethods(declaration: BodyDeclaration): void
+    + getConstants(): List<String>
+    + getFields(): List<FieldModel>
+    + getMethods(): List<MethodModel>
+    + generateString(): String
+}
+class FieldModel {
+    - type: String
+    - isStatic: boolean
+    - cnt: int
+    - {static} VariableToString(field: FieldDeclaration): String
+    + getAssociations(): List<String>
+    + generateString(): String
+    + getType(): String
+    + getCnt(): int
+    + isStatic(): boolean
+}
+class InterfaceModel {
+    ~ GenericType: String
+    ~ DependedClasses: Set<String>
+    - findInheritances(decl: ClassOrInterfaceDeclaration): void
+    - addDependencies(): void
+    ~ parseFields(declaration: BodyDeclaration): void
+    ~ parseMethods(declaration: BodyDeclaration): void
+    + getGenericType(): String
+    + getMethods(): List<MethodModel>
+    + generateString(): String
+}
+class MethodModel {
+    - returnType: String
+    - genericReturnType: String
+    - isStatic: boolean
+    - isAbstract: boolean
+    - isConstructor: boolean
+    - parameterString: String
+    - dependencies: List<String>
+    - buildConstructorParam(method: ConstructorDeclaration): void
+    - parseConstructorDependencies(method: ConstructorDeclaration): void
+    - parseDependencies(method: MethodDeclaration): void
+    - buildParam(method: MethodDeclaration): void
+    - extractGenericReturnType(method: MethodDeclaration): String
+    + generateString(): String
+    + isConstructor(): boolean
+    + getDependencies(): List<String>
+    + getReturnType(): String
+    + getParameterList(): String
+    + isStatic(): boolean
+}
+class AnalyzerUtil {
+    + DfsCheckDepth(className: String, path: LinkedList<String>, graph: Graph, output: List<String>): void
+    + IsCycleByDFS(node: String, classMap: ClassMap, visited: Set<String>, stack: Set<String>, path: LinkedList<String>): boolean
+    + extractTrailingSequence(path: LinkedList<String>): LinkedList<String>
+    + formatCycleOutput(path: List<String>): String
+}
+class CommonUtil {
+    + {static} extractVisibility(modifiers: NodeList<Modifier>, type: String): String
+    + {static} visibilityOrder(visibility1: String, visibility2: String): int
+    + {static} sortClassList(classList: List<AbstractClassModel>): void
+    + {static} isBasicType(type: String): boolean
+    + {static} parseType(type: String): List<String>
+    + {static} findTargetClass(target: String, class_list: List<AbstractClassModel>): Optional<ClassModel>
+}
+class Factory {
+    ~ f(): void
+    + {static} classFactory(declaration: BodyDeclaration): AbstractClassModel
+    + {static} createTypeDeclaration(name: String, type: String, isAbstract: boolean, valueList: String): BodyDeclaration<?>
+}
+class GlobalVar {
+    - {static} graph: Graph
+    + {static} getGraph(): Graph
+}
+BaseModel <|-- MethodModel
+AbstractClassModel <|-- InterfaceModel
+AbstractClassModel <|-- ClassModel
+AbstractClassModel <|-- EnumModel
+BaseModel <|-- AbstractClassModel
+BaseModel <|-- FieldModel
+ClassMap <-- Graph
+ClassParser <-- ClassDiagram
+Graph <-- GlobalVar
+MethodModel <-- AbstractClassModel
+FieldModel <-- AbstractClassModel
+ClassDiagram <-- CommandLineTool
+Graph <-- ClassParser
+AbstractClassModel <-- ClassParser
+Deque <-- ClassParser
+Graph <-- SmellAnalyzer
+AbstractClassModel <-- SmellAnalyzer
+AnalyzerUtil <-- SmellAnalyzer
+Graph <.. ClassOp
+AbstractClassModel <.. ClassOp
+BodyDeclaration <.. ClassOp
+StringBuilder <.. MethodModel
+MethodDeclaration <.. MethodModel
+ConstructorDeclaration <.. MethodModel
+StringBuilder <.. CommonUtil
+Optional <.. CommonUtil
+ClassModel <.. CommonUtil
+AbstractClassModel <.. CommonUtil
+NodeList <.. CommonUtil
+Modifier <.. CommonUtil
+MethodModel <.. Query
+InterfaceModel <.. Query
+Graph <.. Query
+Optional <.. Query
+StringBuilder <.. Query
+ClassModel <.. Query
+EnumModel <.. Query
+AbstractClassModel <.. Query
+FieldModel <.. Query
+ClassParser <.. Query
+Graph <.. AnalyzerUtil
+StringBuilder <.. AnalyzerUtil
+ClassMap <.. AnalyzerUtil
+Graph <.. Factory
+ClassOrInterfaceDeclaration <.. Factory
+AbstractClassModel <.. Factory
+BodyDeclaration <.. Factory
+EnumDeclaration <.. Factory
+MethodModel <.. FunctionOp
+Type <.. FunctionOp
+Optional <.. FunctionOp
+ClassModel <.. FunctionOp
+AbstractClassModel <.. FunctionOp
+MethodDeclaration <.. FunctionOp
+Parameter <.. FunctionOp
+ClassDiagramGenerator <.. JClassDiagram
+ClassDiagram <.. JClassDiagram
+CommandLineTool <.. JClassDiagram
+MethodModel <.. SmellAnalyzer
+ClassModel <.. SmellAnalyzer
+ClassMap <.. SmellAnalyzer
+FieldModel <.. SmellAnalyzer
+Path <.. ClassDiagramGenerator
+ClassDiagram <.. ClassDiagramGenerator
+DirectoryStream <.. ClassDiagramGenerator
+MethodModel <.. InterfaceModel
+StringBuilder <.. InterfaceModel
+ClassOrInterfaceDeclaration <.. InterfaceModel
+MethodDeclaration <.. InterfaceModel
+BodyDeclaration <.. InterfaceModel
+ClassOrInterfaceType <.. InterfaceModel
+Path <.. ClassDiagram
+DocumentBuilderFactory <.. ClassDiagram
+DocumentBuilder <.. ClassDiagram
+NodeList <.. ClassDiagram
+Element <.. ClassDiagram
+Document <.. ClassDiagram
+File <.. ClassDiagram
+MethodModel <.. ClassModel
+StringBuilder <.. ClassModel
+ClassOrInterfaceDeclaration <.. ClassModel
+MethodDeclaration <.. ClassModel
+BodyDeclaration <.. ClassModel
+ClassOrInterfaceType <.. ClassModel
+FieldModel <.. ClassModel
+FieldDeclaration <.. ClassModel
+MethodModel <.. EnumModel
+EnumConstantDeclaration <.. EnumModel
+StringBuilder <.. EnumModel
+MethodDeclaration <.. EnumModel
+BodyDeclaration <.. EnumModel
+FieldModel <.. EnumModel
+FieldDeclaration <.. EnumModel
+EnumDeclaration <.. EnumModel
+ClassOrInterfaceDeclaration <.. AbstractClassModel
+BodyDeclaration <.. AbstractClassModel
+Optional <.. FieldOp
+ClassModel <.. FieldOp
+AbstractClassModel <.. FieldOp
+FieldModel <.. FieldOp
+FieldDeclaration <.. FieldOp
+StringBuilder <.. ClassMap
+FieldDeclaration <.. FieldModel
+ClassDiagramGenerator <.. Main
+Path <.. Main
+ClassDiagram <.. Main
+Path <.. ClassParser
+CompilationUnit <.. ClassParser
+StringBuilder <.. ClassParser
+BodyDeclaration <.. ClassParser
+File <.. ClassParser
+SmellAnalyzer <.. ClassParser
+@enduml
+

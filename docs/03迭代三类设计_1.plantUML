@@ -1,0 +1,119 @@
+@startuml
+class BlankCell {
+    + meet(player: Player): void
+}
+abstract class Cell {
+    # game: Game
+    + setGame(game: Game): void
+    + {abstract} meet(player: Player): void
+}
+class CellFactory {
+    + {static} createCell(cellStr: String): Cell
+}
+class Dice {
+    - it: int
+    - numberList: List<Integer>
+    + getSteps(): int
+}
+class Game {
+    - chessboardSize: int
+    - dice: Dice
+    - players: List<Player>
+    - chessboard: List<Cell>
+    - rounds: int
+    - processRound(round: int): void
+    - shouldSkipPlayer(player: Player): boolean
+    - movePlayer(player: Player): void
+    - updatePlayerStates(): void
+    - printRoundStatus(round: int): void
+    - checkGameEnd(): boolean
+    - declareWinner(): void
+    - findWeakestPlayers(current: Player): List<Player>
+    - upgradeProperties(candidates: List<Player>): void
+    + play(): void
+    + addHouse(player: Player): void
+    + getPlayers(): List<Player>
+    + getChessboardSize(): int
+}
+class HouseCell {
+    + meet(player: Player): void
+}
+class Main {
+    + {static} main(args: String[]): void
+}
+class MoneyCell {
+    - gainMoney: int
+    + meet(player: Player): void
+}
+class Player {
+    - state: PlayerState
+    - id: int
+    - money: int
+    - position: int
+    - rate: int
+    + estates: List<PropertyCell>
+    + bankrupt(): void
+    + getTotalAsset(): int
+    + getId(): int
+    + getMoney(): int
+    + gainMoney(money: int): void
+    + loseMoney(money: int): void
+    + setRate(rate: int): void
+    + getState(): PlayerState
+    + setState(state: PlayerState): void
+    + getPosition(): int
+    + setPosition(position: int): void
+}
+enum PlayerState {
+    PLAYING
+    TO_WAITING
+    WAITING
+    FAILED
+}
+class PropertyCell {
+    - purchasePrice: int
+    - baseRent: int
+    - houseNumber: int
+    + owner: Player
+    - buy(player: Player): void
+    - upgrade(): void
+    + meet(player: Player): void
+    + getPrice(): int
+    + getValue(): int
+    + clearHouse(): void
+}
+class RobCell {
+    - findClosestPlayer(current: Player, players: List<Player>): Player
+    - calculateDistance(a: int, b: int, size: int): int
+    - transferMoney(a: Player, b: Player): void
+    + meet(player: Player): void
+}
+class WaitCell {
+    + meet(player: Player): void
+}
+Cell <|-- HouseCell
+Cell <|-- MoneyCell
+Cell <|-- WaitCell
+Cell <|-- RobCell
+Cell <|-- PropertyCell
+Cell <|-- BlankCell
+PlayerState <-- Player
+PropertyCell <-- Player
+Player <-- Game
+Dice <-- Game
+Cell <-- Game
+Player <-- PropertyCell
+Game <-- Cell
+PropertyCell <.. Game
+Player <.. HouseCell
+Player <.. MoneyCell
+Player <.. WaitCell
+Player <.. RobCell
+Player <.. Cell
+Cell <.. CellFactory
+Scanner <.. Main
+Player <.. Main
+Game <.. Main
+Cell <.. Main
+Player <.. BlankCell
+@enduml

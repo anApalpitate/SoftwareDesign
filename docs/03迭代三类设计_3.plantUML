@@ -1,0 +1,72 @@
+@startuml
+skinparam linetype ortho
+left to right direction
+package command
+{
+    class CommandLineTool{}
+    class ClassOp{}
+    class FieldOp{}
+    class FunctionOp{}
+    class Query{}
+}
+package diagram{  
+    class ClassDiagram{}
+}
+
+package diagram
+{
+    class ClassDiagram{}
+    class ClassDiagramGenerator{}
+    class ClassParser{}
+    class SmellAnalyzer{}
+}
+
+package graph
+{
+    class ClassMap{}
+    class Graph{}
+}
+
+package model
+{
+    abstract class AbstractClassModel{}
+    abstract class BaseModel{}
+    class ClassModel{}
+    class EnumModel{}
+    class InterFaceModel{}
+    class FieldModel{}
+    class MethodModel{}
+}
+
+package utils
+{
+    class AnalyzerUtil{}
+    class CommonUtil{}
+    class Factory{}
+}
+
+AbstractClassModel -|> BaseModel
+ClassModel -|> AbstractClassModel
+EnumModel -|> AbstractClassModel
+InterFaceModel -|> AbstractClassModel
+FieldModel -left|> BaseModel
+MethodModel -|> BaseModel
+AbstractClassModel *-- FieldModel
+AbstractClassModel *-- MethodModel
+
+Graph --> ClassMap
+SmellAnalyzer --> AnalyzerUtil
+SmellAnalyzer -left-> Graph
+ClassDiagram -up-> ClassParser
+ClassDiagramGenerator .up.> ClassDiagram
+ClassParser .up.> SmellAnalyzer
+Factory --> AbstractClassModel
+
+CommandLineTool .left.> ClassDiagram
+ClassDiagram..>ClassOp
+ClassDiagram..>FieldOp
+ClassDiagram..>FunctionOp
+ClassDiagram..>Query
+
+@enduml
+
